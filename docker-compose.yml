@@ -1,0 +1,30 @@
+services:
+  api:
+    container_name: openquiz_api
+    build: ./api
+    ports:
+      - "5001:5000"
+    volumes:
+      - ./api:/app
+    environment:
+      - FLASK_APP=app
+      - FLASK_ENV=development
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=senha123
+      - MYSQL_DATABASE=openquiz
+      - MYSQL_HOST=db
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    container_name: openquiz_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: senha123
+      MYSQL_DATABASE: openquiz
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db/data:/var/lib/mysql
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql

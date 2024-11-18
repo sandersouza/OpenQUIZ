@@ -1,0 +1,5 @@
+mysql:
+  user: root
+  password: senha123
+  database: openquiz
+  host: db
