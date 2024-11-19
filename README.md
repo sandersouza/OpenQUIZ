@@ -1,5 +1,5 @@
 # OpenQUIZ Game API
-Create your owner QUIZ server game with a simple management API. This project stay in early state, and can be a Open Source alternative to others QUIZ team games like Kahoot.
+Create your own QUIZ server game with a simple management API. This project is in an early stage and can be an Open Source alternative to other QUIZ team games like Kahoot.
 
 ## Technologies
 - Docker Container
@@ -14,13 +14,13 @@ Create your owner QUIZ server game with a simple management API. This project st
 - Frontend for Admin
 - Frontend for Logged Players
   - Player Profile
-    - Prefered Themes
-    - About ME
+    - Preferred Themes
+    - About Me
     - Social Media Share
   - Game Community
     - Friend List
     - Random QUIZZES
-  - Score board for played QUIZZES
+  - Scoreboard for played QUIZZES
   - Random Create Trivias
 - Frontend for Ephemeral Players
 - OAUTH / SSO Login with Google
@@ -49,7 +49,10 @@ Create your owner QUIZ server game with a simple management API. This project st
 ### 2. List Quizzes
 **GET** `/quizzes`
 
-### 3. Edit a Quiz
+### 3. Get a Quiz with Questions and Answers
+**GET** `/quizzes/<id>`
+
+### 4. Edit a Quiz
 **PUT** `/quizzes/<id>`
 - Body:
   ```json
@@ -58,10 +61,11 @@ Create your owner QUIZ server game with a simple management API. This project st
   }
   ```
 
-### 4. Delete a Quiz
+### 5. Delete a Quiz
 **DELETE** `/quizzes/<id>`
 
-### 5. Create questions and responses
+### 6. Create Questions and Answers
+**POST** `/questions`
 - Body:
   ```json
   {
@@ -77,6 +81,35 @@ Create your owner QUIZ server game with a simple management API. This project st
   }
   ```
 
+### 7. List Questions by Quiz
+**GET** `/questions/<quiz_id>`
+
+### 8. Update a Question and Answers
+**PUT** `/questions/<question_id>`
+- Body:
+  ```json
+  {
+    "question_text": "Updated: What is the capital of France?",
+    "points": 200,
+    "answers": [
+        {"id": 14, "answer_text": "London", "is_correct": true},
+        {"answer_text": "Tokyo", "is_correct": false}
+    ]
+  }
+  ```
+#### **Comportamento da Rota:**
+- **Atualizar Respostas:**
+  - Se uma resposta contém o campo `id`, ela será atualizada no banco.
+- **Adicionar Novas Respostas:**
+  - Respostas sem `id` serão adicionadas como novas no banco.
+- **Remover Respostas:**
+  - Respostas existentes no banco, mas ausentes no corpo da requisição, serão removidas.
+
+### 9. Delete a Question
+**DELETE** `/questions/<question_id>`
+
+---
+
 ## Examples
 Using `curl`:
 ```bash
@@ -86,13 +119,16 @@ curl -X POST -H "Content-Type: application/json" -d '{"name": "Math Quiz"}' http
 # List QUIZZES
 curl -X GET http://localhost:5001/quizzes
 
+# Get QUIZ Details
+curl -X GET http://localhost:5001/quizzes/1
+
 # Update QUIZ ( where {id} = QUIZ ID )
 curl -X PUT -H "Content-Type: application/json" -d '{"name": "Updated Quiz Name"}' http://localhost:5001/quizzes/{id}
 
 # Delete QUIZ ( where {id} = QUIZ ID )
 curl -X DELETE http://localhost:5001/quizzes/1
 
-# Add question and answers into a existent QUIZ
+# Add question and answers into an existing QUIZ
 curl -X POST -H "Content-Type: application/json" -d '{
     "quiz_id": 1,
     "question_text": "What is the capital of France?",
@@ -104,4 +140,20 @@ curl -X POST -H "Content-Type: application/json" -d '{
         {"answer_text": "Berlin", "is_correct": false}
     ]
 }' http://localhost:5001/questions
+
+# List Questions by Quiz
+curl -X GET http://localhost:5001/questions/1
+
+# Update a Question ( where {id} = Question ID )
+curl -X PUT -H "Content-Type: application/json" -d '{
+    "question_text": "Updated: What is the capital of France?",
+    "points": 200,
+    "answers": [
+        {"id": 14, "answer_text": "London", "is_correct": true},
+        {"answer_text": "Tokyo", "is_correct": false}
+    ]
+}' http://localhost:5001/questions/{id}
+
+# Delete a Question ( where {id} = Question ID )
+curl -X DELETE http://localhost:5001/questions/1
 ```

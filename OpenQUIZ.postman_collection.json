@@ -7,150 +7,272 @@
 	},
 	"item": [
 		{
-			"name": "Create new QUIZ",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\"name\": \"Math Quiz\"}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
+			"name": "Quiz Routes",
+			"item": [
+				{
+					"name": "Create new QUIZ",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "97ba2dffd1ea031a26bf2e55de3b3a67f31f064196b9524d386bbef255f16645",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"name\": \"Jornada SRE F1rst\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/quizzes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"quizzes"
+							]
+						},
+						"description": "Create a new quiz\n\nBody:  \n{\"name\": \"{quiz_name}\"}"
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://localhost:5001/quizzes",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5001",
-					"path": [
-						"quizzes"
-					]
+				{
+					"name": "List all QUIZZES",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "97ba2dffd1ea031a26bf2e55de3b3a67f31f064196b9524d386bbef255f16645",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5001/quizzes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"quizzes"
+							]
+						},
+						"description": "Generated from cURL: curl -X GET http://localhost:5001/quizzes\n"
+					},
+					"response": []
 				},
-				"description": "Create a new quiz\n\nBody:  \n{\"name\": \"{quiz_name}\"}"
-			},
-			"response": []
+				{
+					"name": "Update a QUIZ name",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"name\": \"GUILDA SRE COE\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/quizzes/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"quizzes",
+								"4"
+							]
+						},
+						"description": "Edit an existent quiz:  \n  \nRoute -> /quizzes/{quiz_id}"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a QUIZ",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5001/quizzes/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"quizzes",
+								"4"
+							]
+						},
+						"description": "Generated from cURL: curl -X DELETE http://localhost:5001/quizzes/1"
+					},
+					"response": []
+				}
+			]
 		},
 		{
-			"name": "Add Questions and Answer",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"quiz_id\": 1,\n    \"question_text\": \"What is the capital of France?\",\n    \"points\": 100,\n    \"answers\": [\n        {\"answer_text\": \"Paris\", \"is_correct\": true},\n        {\"answer_text\": \"London\", \"is_correct\": false},\n        {\"answer_text\": \"Rome\", \"is_correct\": false},\n        {\"answer_text\": \"Berlin\", \"is_correct\": false}\n    ]\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
+			"name": "Questions Routes",
+			"item": [
+				{
+					"name": "Create Questions by QUIZ",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quiz_id\": 1,\n    \"question_text\": \"What is the capital of France?\",\n    \"points\": 100,\n    \"answers\": [\n        {\"answer_text\": \"Paris\", \"is_correct\": true},\n        {\"answer_text\": \"London\", \"is_correct\": false},\n        {\"answer_text\": \"Rome\", \"is_correct\": false},\n        {\"answer_text\": \"Berlin\", \"is_correct\": false}\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/questions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"questions"
+							]
+						},
+						"description": "Generated from cURL: curl -X POST -H \"Content-Type: application/json\" -d '{\n    \"quiz_id\": 1,\n    \"question_text\": \"What is the capital of France?\",\n    \"points\": 100,\n    \"answers\": [\n        {\"answer_text\": \"Paris\", \"is_correct\": true},\n        {\"answer_text\": \"London\", \"is_correct\": false},\n        {\"answer_text\": \"Rome\", \"is_correct\": false},\n        {\"answer_text\": \"Berlin\", \"is_correct\": false}\n    ]\n}' http://localhost:5001/questions"
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://localhost:5001/questions",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5001",
-					"path": [
-						"questions"
-					]
+				{
+					"name": "List Questions by QUIZ",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5001/questions/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"questions",
+								"1"
+							]
+						},
+						"description": "Generated from cURL: curl -X GET http://localhost:5001/questions/1\n"
+					},
+					"response": []
 				},
-				"description": "Generated from cURL: curl -X POST -H \"Content-Type: application/json\" -d '{\n    \"quiz_id\": 1,\n    \"question_text\": \"What is the capital of France?\",\n    \"points\": 100,\n    \"answers\": [\n        {\"answer_text\": \"Paris\", \"is_correct\": true},\n        {\"answer_text\": \"London\", \"is_correct\": false},\n        {\"answer_text\": \"Rome\", \"is_correct\": false},\n        {\"answer_text\": \"Berlin\", \"is_correct\": false}\n    ]\n}' http://localhost:5001/questions"
-			},
-			"response": []
-		},
-		{
-			"name": "List all QUIZZES",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:5001/quizzes",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5001",
-					"path": [
-						"quizzes"
-					]
+				{
+					"name": "Update Questions by Quiz",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"question_text\": \"Updated Question?\",\n    \"points\": 150,\n    \"answers\": [\n        {\"id\": 1, \"answer_text\": \"Correct Answer\", \"is_correct\": true},\n        {\"id\": 2, \"answer_text\": \"Wrong Answer\", \"is_correct\": false}\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5001/questions/{id}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"questions",
+								"{id}"
+							]
+						},
+						"description": "Generated from cURL: curl -X PUT -H \"Content-Type: application/json\" -d '{\n    \"question_text\": \"Updated Question?\",\n    \"points\": 150,\n    \"answers\": [\n        {\"id\": 1, \"answer_text\": \"Correct Answer\", \"is_correct\": true},\n        {\"id\": 2, \"answer_text\": \"Wrong Answer\", \"is_correct\": false}\n    ]\n}' http://localhost:5001/questions/{id}"
+					},
+					"response": []
 				},
-				"description": "Generated from cURL: curl -X GET http://localhost:5001/quizzes\n"
-			},
-			"response": []
-		},
-		{
-			"name": "Update a QUIZ name",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\"name\": \"Updated Quiz Name\"}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:5001/quizzes/",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5001",
-					"path": [
-						"quizzes",
-						""
-					]
-				},
-				"description": "Edit an existent quiz:  \n  \nRoute -> /quizzes/{quiz_id}"
-			},
-			"response": []
-		},
-		{
-			"name": "Delete a QUIZ",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:5001/quizzes/1",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5001",
-					"path": [
-						"quizzes",
-						"1"
-					]
-				},
-				"description": "Generated from cURL: curl -X DELETE http://localhost:5001/quizzes/1"
-			},
-			"response": []
+				{
+					"name": "Delete Questions by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5001/questions/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"questions",
+								"1"
+							]
+						},
+						"description": "Generated from cURL: curl -X DELETE http://localhost:5001/questions/1"
+					},
+					"response": []
+				}
+			]
 		}
 	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "97ba2dffd1ea031a26bf2e55de3b3a67f31f064196b9524d386bbef255f16645",
+				"type": "string"
+			}
+		]
+	},
 	"event": [
 		{
 			"listen": "prerequest",
