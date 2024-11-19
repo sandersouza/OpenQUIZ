@@ -1,0 +1,183 @@
+{
+	"info": {
+		"_postman_id": "bd782c48-ace0-4f9a-a42f-e1a6336431e8",
+		"name": "OpenQUIZ",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7587829"
+	},
+	"item": [
+		{
+			"name": "Create new QUIZ",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\": \"Math Quiz\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/quizzes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"quizzes"
+					]
+				},
+				"description": "Create a new quiz\n\nBody:  \n{\"name\": \"{quiz_name}\"}"
+			},
+			"response": []
+		},
+		{
+			"name": "Add Questions and Answer",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"quiz_id\": 1,\n    \"question_text\": \"What is the capital of France?\",\n    \"points\": 100,\n    \"answers\": [\n        {\"answer_text\": \"Paris\", \"is_correct\": true},\n        {\"answer_text\": \"London\", \"is_correct\": false},\n        {\"answer_text\": \"Rome\", \"is_correct\": false},\n        {\"answer_text\": \"Berlin\", \"is_correct\": false}\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/questions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"questions"
+					]
+				},
+				"description": "Generated from cURL: curl -X POST -H \"Content-Type: application/json\" -d '{\n    \"quiz_id\": 1,\n    \"question_text\": \"What is the capital of France?\",\n    \"points\": 100,\n    \"answers\": [\n        {\"answer_text\": \"Paris\", \"is_correct\": true},\n        {\"answer_text\": \"London\", \"is_correct\": false},\n        {\"answer_text\": \"Rome\", \"is_correct\": false},\n        {\"answer_text\": \"Berlin\", \"is_correct\": false}\n    ]\n}' http://localhost:5001/questions"
+			},
+			"response": []
+		},
+		{
+			"name": "List all QUIZZES",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/quizzes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"quizzes"
+					]
+				},
+				"description": "Generated from cURL: curl -X GET http://localhost:5001/quizzes\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Update a QUIZ name",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\": \"Updated Quiz Name\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/quizzes/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"quizzes",
+						""
+					]
+				},
+				"description": "Edit an existent quiz:  \n  \nRoute -> /quizzes/{quiz_id}"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a QUIZ",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/quizzes/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"quizzes",
+						"1"
+					]
+				},
+				"description": "Generated from cURL: curl -X DELETE http://localhost:5001/quizzes/1"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": "1",
+			"type": "string"
+		}
+	]
+}

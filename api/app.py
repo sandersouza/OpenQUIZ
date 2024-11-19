@@ -2,8 +2,6 @@ import yaml
 from flask import Flask, request, jsonify
 import mysql.connector
 import os
-import signal
-import sys
 
 app = Flask(__name__)
 
@@ -81,13 +79,34 @@ def delete_quiz(id):
         cursor.close()
         conn.close()
 
-@app.route('/restart', methods=['POST'])
-def restart():
+@app.route('/questions', methods=['POST'])
+def create_question():
+    data = request.json
     try:
-        os.execv(sys.executable, [sys.executable] + sys.argv)
-        return jsonify({"message": "Application is restarting..."}), 200
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        # Insert question
+        cursor.execute(
+            "INSERT INTO questions (quiz_id, question_text, points) VALUES (%s, %s, %s)",
+            (data['quiz_id'], data['question_text'], data.get('points', 150)),
+        )
+        conn.commit()
+        question_id = cursor.lastrowid  # Retrieve the last inserted ID for the question
+
+        # Insert answers
+        for answer in data['answers']:
+            cursor.execute(
+                "INSERT INTO answers (question_id, answer_text, is_correct) VALUES (%s, %s, %s)",
+                (question_id, answer['answer_text'], answer['is_correct']),
+            )
+        conn.commit()
+
+        return jsonify({"message": "Question and answers created successfully", "question_id": question_id}), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
