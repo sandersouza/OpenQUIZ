@@ -1,6 +1,7 @@
 services:
   api:
     container_name: openquiz_api
+    restart: always
     build: ./api
     ports:
       - "5001:5000"
