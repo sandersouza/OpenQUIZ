@@ -3,7 +3,7 @@ Create your own QUIZ server game with a simple management API. This project is i
 
 ## Technologies
 - Docker Container
-- MySQL ( Data Persist )
+- MongoDB ( Data Persist )
 - Redis ( Fast Memory DB )
 - Python w/ Flask ( Rest API )
 - HTML 3.0 and CSS ( Frontend )

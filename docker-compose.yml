@@ -1,31 +1,44 @@
 services:
   api:
     container_name: openquiz_api
-    restart: always
     build: ./api
     ports:
-      - "5001:5000"
+      - "${flask_port}:5000"
     volumes:
       - ./api:/app
     environment:
-      - FLASK_APP=app
-      - FLASK_ENV=development
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=senha123
-      - MYSQL_DATABASE=openquiz
-      - MYSQL_HOST=db
+      - FLASK_APP=${flask_app}
+      - FLASK_ENV=${flask_env}
+      - MONGO_URI=${mongo_uri}
     depends_on:
-      - db
+      - mongo
 
-  db:
-    image: mysql:8.0
-    container_name: openquiz_mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: senha123
-      MYSQL_DATABASE: openquiz
+  mongo:
+    image: mongo:4.4
+    container_name: openquiz_mongo
     ports:
-      - "3306:3306"
+      - "${mongo_port}:27017"
     volumes:
-      - ./db/data:/var/lib/mysql
-      - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "'db.adminCommand(\"ping\")'"]
+      interval: ${mongo_health_interval}
+      timeout: ${mongo_health_timeout}
+      retries: ${mongo_health_retries}
+
+  mongo-express:
+    image: mongo-express:1.0.0-alpha.4
+    container_name: openquiz_mongo_express
+    ports:
+      - "${me_port}:8081"
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=${mongo_pass}
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=${mongo_user}
+      - ME_CONFIG_MONGODB_SERVER=${me_dbserver}
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+volumes:
+  mongo_data:
+    driver: local

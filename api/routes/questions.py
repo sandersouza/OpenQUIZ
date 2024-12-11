@@ -1,183 +1,108 @@
-from flask import Blueprint, jsonify, request
-from services.db import get_db_connection
-import yaml
-from functools import wraps
+from flask import Blueprint, request, jsonify
+from services.db import quizzes_collection, BEARER_TOKEN
+from bson.objectid import ObjectId
 
-questions_blueprint = Blueprint('questions', __name__)
+questions_bp = Blueprint("questions", __name__)
 
-# Carregar o token do config.yml
-with open("config.yml", "r") as f:
-    config = yaml.safe_load(f)
-BEARER_TOKEN = config["auth"]["bearer_token"]
+def authenticate(request):
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or auth_header.split(" ")[1] != BEARER_TOKEN:
+        return False
+    return True
 
-# Middleware para autenticação
-def token_required(f):
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        token = request.headers.get('Authorization')
-        if not token or not token.startswith("Bearer "):
-            return jsonify({"message": "Token is missing or invalid"}), 403
-        provided_token = token.split(" ")[1]
-        if provided_token != BEARER_TOKEN:
-            return jsonify({"message": "Invalid token"}), 403
-        return f(*args, **kwargs)
-    return wrapper
-
-# Criar uma nova pergunta para um quiz
-@questions_blueprint.route('', methods=['POST'])
-@token_required
+@questions_bp.route("/questions", methods=["POST"])
 def create_question():
-    data = request.json
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        # Inserir pergunta
-        cursor.execute(
-            "INSERT INTO questions (quiz_id, question_text, points) VALUES (%s, %s, %s)",
-            (data['quiz_id'], data['question_text'], data.get('points', 150)),
-        )
-        conn.commit()
-        question_id = cursor.lastrowid  # Recuperar o ID da pergunta inserida
+    if not authenticate(request):
+        return jsonify({"error": "Unauthorized"}), 401
 
-        # Inserir respostas associadas à pergunta
-        for answer in data['answers']:
-            cursor.execute(
-                "INSERT INTO answers (question_id, answer_text, is_correct) VALUES (%s, %s, %s)",
-                (question_id, answer['answer_text'], answer['is_correct']),
-            )
-        conn.commit()
+    data = request.get_json()
+    quiz_id = data.get("quiz_id")
+    question_text = data.get("question_text")
+    points = data.get("points", 150)
+    answers = data.get("answers", [])
 
-        return jsonify({"message": "Question created successfully", "question_id": question_id}), 201
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-    finally:
-        cursor.close()
-        conn.close()
+    if not quiz_id or not question_text or not answers:
+        return jsonify({"error": "quiz_id, question_text, and answers are required"}), 400
 
-# Listar todas as perguntas de um quiz
-@questions_blueprint.route('/<int:quiz_id>', methods=['GET'])
-@token_required
+    question = {
+        "question_text": question_text,
+        "points": points,
+        "answers": [
+            {"answer_text": a.get("answer_text"), "is_correct": a.get("is_correct")}
+            for a in answers if a.get("answer_text") and a.get("is_correct") is not None
+        ],
+    }
+
+    result = quizzes_collection.update_one(
+        {"_id": ObjectId(quiz_id)},
+        {"$push": {"questions": question}}
+    )
+
+    if result.matched_count == 0:
+        return jsonify({"error": "Quiz not found"}), 404
+
+    return jsonify({"message": "Question added to quiz successfully"}), 201
+
+
+@questions_bp.route("/questions/<quiz_id>", methods=["GET"])
 def list_questions(quiz_id):
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
+    if not authenticate(request):
+        return jsonify({"error": "Unauthorized"}), 401
 
-        # Buscar perguntas relacionadas ao quiz
-        cursor.execute(
-            "SELECT id, question_text, points FROM questions WHERE quiz_id = %s",
-            (quiz_id,)
-        )
-        questions = cursor.fetchall()
+    quiz = quizzes_collection.find_one({"_id": ObjectId(quiz_id)})
 
-        question_list = []
-        for question in questions:
-            question_id, question_text, points = question
+    if not quiz:
+        return jsonify({"error": "Quiz not found"}), 404
 
-            # Buscar respostas para cada pergunta
-            cursor.execute(
-                "SELECT id, answer_text, is_correct FROM answers WHERE question_id = %s",
-                (question_id,)
-            )
-            answers = cursor.fetchall()
+    questions = quiz.get("questions", [])
 
-            # Adicionar pergunta e respostas ao formato compacto
-            question_list.append({
-                "question_id": question_id,  # Adicionando question_id
-                "question_text": question_text,
-                "points": points,
-                "answers": [
-                    {
-                        "id": a[0],
-                        "answer_text": a[1],
-                        "is_correct": bool(a[2])  # Convertendo para boolean
-                    } for a in answers
-                ]
-            })
+    return jsonify(questions), 200
 
-        return jsonify(question_list), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-    finally:
-        cursor.close()
-        conn.close()
 
-# Atualizar uma pergunta existente
-@questions_blueprint.route('/<int:question_id>', methods=['PUT'])
-@token_required
-def update_question(question_id):
-    data = request.json
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
+@questions_bp.route("/questions/<quiz_id>", methods=["PUT"])
+def update_questions(quiz_id):
+    if not authenticate(request):
+        return jsonify({"error": "Unauthorized"}), 401
 
-        # Verificar se a pergunta existe
-        cursor.execute("SELECT id FROM questions WHERE id = %s", (question_id,))
-        question = cursor.fetchone()
-        if not question:
-            return jsonify({"message": "Question not found"}), 404
+    data = request.get_json()
 
-        # Atualizar a pergunta
-        cursor.execute(
-            "UPDATE questions SET question_text = %s, points = %s WHERE id = %s",
-            (data['question_text'], data.get('points', 150), question_id),
-        )
-        conn.commit()
+    if not isinstance(data, list):
+        return jsonify({"error": "Payload must be a list of questions"}), 400
 
-        # Obter IDs das respostas atuais no banco
-        cursor.execute(
-            "SELECT id FROM answers WHERE question_id = %s", (question_id,)
-        )
-        current_answer_ids = {row[0] for row in cursor.fetchall()}
+    updated_questions = [
+        {
+            "question_text": q.get("question_text"),
+            "points": q.get("points", 150),
+            "answers": [
+                {"answer_text": a.get("answer_text"), "is_correct": a.get("is_correct")}
+                for a in q.get("answers", []) if a.get("answer_text") and a.get("is_correct") is not None
+            ],
+        }
+        for q in data if q.get("question_text")
+    ]
 
-        # IDs das respostas enviadas na requisição
-        sent_answer_ids = {answer.get("id") for answer in data['answers'] if "id" in answer}
+    result = quizzes_collection.update_one(
+        {"_id": ObjectId(quiz_id)},
+        {"$set": {"questions": updated_questions}}
+    )
 
-        # Determinar quais respostas precisam ser removidas
-        answers_to_delete = current_answer_ids - sent_answer_ids
+    if result.matched_count == 0:
+        return jsonify({"error": "Quiz not found"}), 404
 
-        # Remover respostas que não estão na requisição
-        if answers_to_delete:
-            cursor.executemany(
-                "DELETE FROM answers WHERE id = %s", [(answer_id,) for answer_id in answers_to_delete]
-            )
+    return jsonify({"message": "Questions updated successfully"}), 200
 
-        # Atualizar ou inserir respostas
-        for answer in data['answers']:
-            if "id" in answer:
-                # Atualizar resposta existente
-                cursor.execute(
-                    "UPDATE answers SET answer_text = %s, is_correct = %s WHERE id = %s",
-                    (answer['answer_text'], answer['is_correct'], answer['id']),
-                )
-            else:
-                # Inserir nova resposta
-                cursor.execute(
-                    "INSERT INTO answers (question_id, answer_text, is_correct) VALUES (%s, %s, %s)",
-                    (question_id, answer['answer_text'], answer['is_correct']),
-                )
-        conn.commit()
 
-        return jsonify({"message": "Question and answers updated successfully"}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-    finally:
-        cursor.close()
-        conn.close()
+@questions_bp.route("/questions/<quiz_id>", methods=["DELETE"])
+def delete_questions(quiz_id):
+    if not authenticate(request):
+        return jsonify({"error": "Unauthorized"}), 401
 
-# Excluir uma pergunta existente
-@questions_blueprint.route('/<int:question_id>', methods=['DELETE'])
-@token_required
-def delete_question(question_id):
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        cursor.execute("DELETE FROM questions WHERE id = %s", (question_id,))
-        conn.commit()
-        if cursor.rowcount == 0:
-            return jsonify({"message": "Question not found"}), 404
-        return jsonify({"message": "Question deleted successfully"}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-    finally:
-        cursor.close()
-        conn.close()
+    result = quizzes_collection.update_one(
+        {"_id": ObjectId(quiz_id)},
+        {"$unset": {"questions": ""}}
+    )
+
+    if result.matched_count == 0:
+        return jsonify({"error": "Quiz not found"}), 404
+
+    return jsonify({"message": "Questions deleted successfully"}), 200

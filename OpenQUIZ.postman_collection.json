@@ -100,7 +100,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"name\": \"GUILDA SRE COE\"}",
+							"raw": "{\"name\": \"Perguntas sobre SRE\"}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -108,7 +108,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5001/quizzes/4",
+							"raw": "http://localhost:5001/quizzes/6758faf8299ff577f6d473f2",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -116,7 +116,7 @@
 							"port": "5001",
 							"path": [
 								"quizzes",
-								"4"
+								"6758faf8299ff577f6d473f2"
 							]
 						},
 						"description": "Edit an existent quiz:  \n  \nRoute -> /quizzes/{quiz_id}"
@@ -161,7 +161,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"quiz_id\": 1,\n    \"question_text\": \"What is the capital of France?\",\n    \"points\": 100,\n    \"answers\": [\n        {\"answer_text\": \"Paris\", \"is_correct\": true},\n        {\"answer_text\": \"London\", \"is_correct\": false},\n        {\"answer_text\": \"Rome\", \"is_correct\": false},\n        {\"answer_text\": \"Berlin\", \"is_correct\": false}\n    ]\n}",
+							"raw": "{\n    \"quiz_id\": \"6758fb7d299ff577f6d473f5\",\n    \"question_text\": \"Qual o aproximado de PI\",\n    \"points\": 50,\n    \"answers\": [\n        {\"answer_text\": \"3.151692...\", \"is_correct\": true},\n        {\"answer_text\": \"18\", \"is_correct\": false},\n        {\"answer_text\": \"4.19873    \", \"is_correct\": false},\n        {\"answer_text\": \"Indefinido\", \"is_correct\": false}\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -216,7 +216,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"question_text\": \"Updated Question?\",\n    \"points\": 150,\n    \"answers\": [\n        {\"id\": 1, \"answer_text\": \"Correct Answer\", \"is_correct\": true},\n        {\"id\": 2, \"answer_text\": \"Wrong Answer\", \"is_correct\": false}\n    ]\n}",
+							"raw": "[\n    {\n        \"answers\": [\n            {\n                \"answer_text\": \"3.151692...\",\n                \"is_correct\": true\n            },\n            {\n                \"answer_text\": \"18\",\n                \"is_correct\": false\n            },\n            {\n                \"answer_text\": \"4.19873\",\n                \"is_correct\": false\n            },\n            {\n                \"answer_text\": \"Indefinido\",\n                \"is_correct\": false\n            }\n        ],\n        \"points\": 150,\n        \"question_text\": \"Qual o valor aproximado de PI\"\n    }\n]",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -224,7 +224,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5001/questions/{id}",
+							"raw": "http://localhost:5001/questions/6758fb7d299ff577f6d473f5",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -232,7 +232,7 @@
 							"port": "5001",
 							"path": [
 								"questions",
-								"{id}"
+								"6758fb7d299ff577f6d473f5"
 							]
 						},
 						"description": "Generated from cURL: curl -X PUT -H \"Content-Type: application/json\" -d '{\n    \"question_text\": \"Updated Question?\",\n    \"points\": 150,\n    \"answers\": [\n        {\"id\": 1, \"answer_text\": \"Correct Answer\", \"is_correct\": true},\n        {\"id\": 2, \"answer_text\": \"Wrong Answer\", \"is_correct\": false}\n    ]\n}' http://localhost:5001/questions/{id}"

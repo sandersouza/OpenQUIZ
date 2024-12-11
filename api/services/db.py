@@ -1,15 +1,20 @@
-import mysql.connector
 import yaml
+from pymongo import MongoClient
+import os
 
-# Carregar configuração
-with open("config.yml", "r") as f:
-    config = yaml.safe_load(f)
-mysql_config = config["mysql"]
+# Carregar configurações do arquivo config.yml
+config_file = "config.yml"
+with open(config_file, "r") as file:
+    config = yaml.safe_load(file)
 
-def get_db_connection():
-    return mysql.connector.connect(
-        host=mysql_config["host"],
-        user=mysql_config["user"],
-        password=mysql_config["password"],
-        database=mysql_config["database"],
-    )
+MONGO_URI = config.get("mongo", {}).get("uri", "mongodb://localhost:27017/openquiz")
+BEARER_TOKEN = config.get("auth", {}).get("bearer_token", None)
+
+# Configuração da conexão com o MongoDB
+client = MongoClient(MONGO_URI)
+db = client.get_database()
+
+# Coleções do MongoDB
+quizzes_collection = db["quizzes"]
+questions_collection = db["questions"]
+answers_collection = db["answers"]
