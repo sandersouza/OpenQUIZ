@@ -1,16 +1,16 @@
-# OpenQUIZ Game API
-Create your own QUIZ server game with a simple management API. This project is in an early stage and can be an Open Source alternative to other QUIZ team games like Kahoot.
+# OpenQUIZ Game API 🎮
+Create your own QUIZ server game with a simple management API. This project is in an early stage and can be an Open Source alternative to other QUIZ team games like Kahoot. This is a new version refactored to simplify the structure of Rest API, Routes and endpoints and many more other simplified schemes to speedup, and make this API 100% compliance with OpenAPI Specifications.
 
-## Technologies
-- Docker Container
-- MongoDB ( Data Persist )
-- Redis ( Fast Memory DB )
-- Python w/ Flask ( Rest API )
-- HTML 3.0 and CSS ( Frontend )
-- NGINX / QUIC ( Fast Response )
-- Maybe... RabbitMQ ( Queue )
+In time...I change from old loved Flask RestAPI, to FastAPI + Hypercorn framework and support to HTTP/3 and QUIC with Python aioquic library. FastAPI is a framework with high performance, easy to learn, fast to code, ready for production 🚀
 
-## In development:
+## Technologies 🖨️
+- 🖥️ Docker Container
+- 💾 MongoDB ( Data Persist )
+- 🐍 Python w/ FastAPI ( Support to HTTP/3 and QUIC )
+- 🌐 HTML 3.0 and CSS ( Frontend )
+- 🧪 Maybe... RabbitMQ ( Queue )
+
+## In development 🪒
 - Frontend for Admin
 - Frontend for Logged Players
   - Player Profile
@@ -25,135 +25,89 @@ Create your own QUIZ server game with a simple management API. This project is i
 - Frontend for Ephemeral Players
 - OAUTH / SSO Login with Google
 
-## Setup Instructions
-1. Build the containers:
-   ```bash
-   docker-compose build
-   ```
-
-2. Start the containers:
-   ```bash
-   docker-compose up
-   ```
-
-## API Endpoints
-### 1. Create a Quiz
-**POST** `/quizzes`
-- Body:
-  ```json
-  {
-      "name": "Quiz Name"
-  }
-  ```
-
-### 2. List Quizzes
-**GET** `/quizzes`
-
-### 3. Get a Quiz with Questions and Answers
-**GET** `/quizzes/<id>`
-
-### 4. Edit a Quiz
-**PUT** `/quizzes/<id>`
-- Body:
-  ```json
-  {
-      "name": "Updated Quiz Name"
-  }
-  ```
-
-### 5. Delete a Quiz
-**DELETE** `/quizzes/<id>`
-
-### 6. Create Questions and Answers
-**POST** `/questions`
-- Body:
-  ```json
-  {
-    "quiz_id": 1,
-    "question_text": "What is the capital of France?",
-    "points": 100,
-    "answers": [
-        {"answer_text": "Paris", "is_correct": true},
-        {"answer_text": "London", "is_correct": false},
-        {"answer_text": "Rome", "is_correct": false},
-        {"answer_text": "Berlin", "is_correct": false}
-    ]
-  }
-  ```
-
-### 7. List Questions by Quiz
-**GET** `/questions/<quiz_id>`
-
-### 8. Update a Question and Answers
-**PUT** `/questions/<question_id>`
-- Body:
-  ```json
-  {
-    "question_text": "Updated: What is the capital of France?",
-    "points": 200,
-    "answers": [
-        {"id": 14, "answer_text": "London", "is_correct": true},
-        {"answer_text": "Tokyo", "is_correct": false}
-    ]
-  }
-  ```
-#### **Comportamento da Rota:**
-- **Atualizar Respostas:**
-  - Se uma resposta contém o campo `id`, ela será atualizada no banco.
-- **Adicionar Novas Respostas:**
-  - Respostas sem `id` serão adicionadas como novas no banco.
-- **Remover Respostas:**
-  - Respostas existentes no banco, mas ausentes no corpo da requisição, serão removidas.
-
-### 9. Delete a Question
-**DELETE** `/questions/<question_id>`
-
----
-
-## Examples
-Using `curl`:
+## Setup Instructions 🛠️
 ```bash
-# Create QUIZ
-curl -X POST -H "Content-Type: application/json" -d '{"name": "Math Quiz"}' http://localhost:5001/quizzes
+### Build the stack and be happy 🎉
+$ docker compose -up -d --build
+```
 
-# List QUIZZES
-curl -X GET http://localhost:5001/quizzes
+## How can I test? 🧪
+```txt
+At this time no one update yours API Test tools ( like postman or insomnia ), to support HTTP/3 or QUIC. Then... use everything UI you want, I preffer Postman, and put into root of this repo, a Postman Collection with all you need.
 
-# Get QUIZ Details
-curl -X GET http://localhost:5001/quizzes/1
+"And All You need is Love" ❤️ - Lenon. John
 
-# Update QUIZ ( where {id} = QUIZ ID )
-curl -X PUT -H "Content-Type: application/json" -d '{"name": "Updated Quiz Name"}' http://localhost:5001/quizzes/{id}
+But... if you wanna make great tests in shell, use CURL with --http3 support! read more around the internet, how can you install it for your OS.
 
-# Delete QUIZ ( where {id} = QUIZ ID )
-curl -X DELETE http://localhost:5001/quizzes/1
+Above, endpoint, routes and payloads to testing.
+```
 
-# Add question and answers into an existing QUIZ
-curl -X POST -H "Content-Type: application/json" -d '{
-    "quiz_id": 1,
-    "question_text": "What is the capital of France?",
-    "points": 100,
-    "answers": [
-        {"answer_text": "Paris", "is_correct": true},
-        {"answer_text": "London", "is_correct": false},
-        {"answer_text": "Rome", "is_correct": false},
-        {"answer_text": "Berlin", "is_correct": false}
+
+## Create a Quiz 🎲
+```json
+Method  : { POST }
+Endpoint: https://{server}/quizzes/
+
+Request Body
+------------
+{
+    "name": "Quiz Example",
+    "questions": [
+        {
+            "question_text": "What is FastAPI?",
+            "points": 100,
+            "answers": [
+                {
+                    "answer_text": "The ONE! Fastest API Rest Framework",
+                    "is_correct": true
+                },
+                {
+                    "answer_text": "An generic API Rest Framework",
+                    "is_correct": false
+                }
+            ]
+        }
     ]
-}' http://localhost:5001/questions
+}
+```
 
-# List Questions by Quiz
-curl -X GET http://localhost:5001/questions/1
+## List Quizzes 🔎
+```json
+Method  : { GET }
+Endpoint: https://{server}/quizzes/
+```
 
-# Update a Question ( where {id} = Question ID )
-curl -X PUT -H "Content-Type: application/json" -d '{
-    "question_text": "Updated: What is the capital of France?",
-    "points": 200,
-    "answers": [
-        {"id": 14, "answer_text": "London", "is_correct": true},
-        {"answer_text": "Tokyo", "is_correct": false}
+## Edit a Quiz ✂️
+```json
+Method  : { PUT }
+Endpoint: https://{server}/quizzes/{id}
+
+Request Body
+------------
+
+{
+    "name": "Quiz Example",
+    "questions": [
+        {
+            "question_text": "FastAPI or Flask RestAPI?",
+            "points": 100,
+            "answers": [
+                {
+                    "answer_text": "Both are an good choice!",
+                    "is_correct": false
+                },
+                {
+                    "answer_text": "But... FastAPI is FAST!",
+                    "is_correct": true
+                }
+            ]
+        }
     ]
-}' http://localhost:5001/questions/{id}
+}
+  ```
 
-# Delete a Question ( where {id} = Question ID )
-curl -X DELETE http://localhost:5001/questions/1
+## Delete a Quiz 🧨
+```json
+Method  : { DEL }
+Endpoint: https://{server}/quizzes/{id}
 ```
