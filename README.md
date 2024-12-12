@@ -44,12 +44,12 @@ Above, endpoint, routes and payloads to testing.
 
 
 ## Create a Quiz 🎲
-```json
+```txt
 Method  : { POST }
 Endpoint: https://{server}/quizzes/
-
-Request Body
-------------
+Request Body ↓↓↓
+```
+```json
 {
     "name": "Quiz Example",
     "questions": [
@@ -72,19 +72,18 @@ Request Body
 ```
 
 ## List Quizzes 🔎
-```json
+```txt
 Method  : { GET }
 Endpoint: https://{server}/quizzes/
 ```
 
 ## Edit a Quiz ✂️
-```json
+```txt
 Method  : { PUT }
 Endpoint: https://{server}/quizzes/{id}
-
-Request Body
-------------
-
+Request Body↓↓↓
+```
+```json
 {
     "name": "Quiz Example",
     "questions": [
@@ -107,7 +106,7 @@ Request Body
   ```
 
 ## Delete a Quiz 🧨
-```json
+```txt
 Method  : { DEL }
 Endpoint: https://{server}/quizzes/{id}
 ```
