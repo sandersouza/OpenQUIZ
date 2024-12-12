@@ -1,3 +1,4 @@
+![Descrição da Imagem](banner.png)
 # 🎮 OpenQUIZ Game API
 Create your own QUIZ server game with a simple management API. This project is in an early stage and can be an Open Source alternative to other QUIZ team games like Kahoot. This is a new version refactored to simplify the structure of Rest API, Routes and endpoints and many more other simplified schemes to speedup, and make this API 100% compliance with OpenAPI Specifications.
 
