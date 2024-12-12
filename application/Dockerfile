@@ -2,10 +2,11 @@ FROM python:3.10-slim
 ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
+COPY *.pem .
+COPY hypercorn_config.py .
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
-EXPOSE 5000
+EXPOSE 4433
 
-CMD ["flask", "run", "--host=0.0.0.0"]
+CMD ["hypercorn", "app.main:app", "-c", "hypercorn_config.py"]

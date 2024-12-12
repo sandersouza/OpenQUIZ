@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "bd782c48-ace0-4f9a-a42f-e1a6336431e8",
-		"name": "OpenQUIZ",
+		"_postman_id": "f2a5acb6-a05e-416e-a6d1-baa756c718d8",
+		"name": "OpenQUIZ QUIC",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "7587829"
 	},
@@ -12,16 +12,6 @@
 				{
 					"name": "Create new QUIZ",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "97ba2dffd1ea031a26bf2e55de3b3a67f31f064196b9524d386bbef255f16645",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -31,7 +21,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"name\": \"Jornada SRE F1rst\"}",
+							"raw": "{\n    \"name\": \"Exemplo de Quiz\",\n    \"questions\": [\n        {\n            \"question_text\": \"O que é FastAPI?\",\n            \"points\": 100,\n            \"answers\": [\n                {\n                    \"answer_text\": \"Uma API rápida\",\n                    \"is_correct\": true\n                },\n                {\n                    \"answer_text\": \"Um framework lento\",\n                    \"is_correct\": false\n                }\n            ]\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -39,12 +29,12 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5001/quizzes",
-							"protocol": "http",
+							"raw": "https://localhost:4433/quizzes",
+							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "5001",
+							"port": "4433",
 							"path": [
 								"quizzes"
 							]
@@ -56,25 +46,15 @@
 				{
 					"name": "List all QUIZZES",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "97ba2dffd1ea031a26bf2e55de3b3a67f31f064196b9524d386bbef255f16645",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:5001/quizzes",
-							"protocol": "http",
+							"raw": "https://localhost:4433/quizzes",
+							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "5001",
+							"port": "4433",
 							"path": [
 								"quizzes"
 							]
@@ -100,7 +80,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"name\": \"Perguntas sobre SRE\"}",
+							"raw": "{\n    \"name\": \"Variedades sobre Computação\",\n    \"questions\": [\n        {\n            \"question_text\": \"O que é Perl?\",\n            \"points\": 300,\n            \"answers\": [\n                {\"answer_text\": \"Uma linguagem de programação\", \"is_correct\": true},\n                {\"answer_text\": \"Uma ferramenta de design\", \"is_correct\": false},\n                {\"answer_text\": \"Uma programa para stress test\", \"is_correct\": false}\n            ]\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -108,15 +88,15 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5001/quizzes/6758faf8299ff577f6d473f2",
-							"protocol": "http",
+							"raw": "https://localhost:4433/quizzes/6759dddab2783fb241edf809",
+							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "5001",
+							"port": "4433",
 							"path": [
 								"quizzes",
-								"6758faf8299ff577f6d473f2"
+								"6759dddab2783fb241edf809"
 							]
 						},
 						"description": "Edit an existent quiz:  \n  \nRoute -> /quizzes/{quiz_id}"
@@ -129,15 +109,15 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:5001/quizzes/4",
-							"protocol": "http",
+							"raw": "https://localhost:4433/quizzes/6759dddab2783fb241edf809",
+							"protocol": "https",
 							"host": [
 								"localhost"
 							],
-							"port": "5001",
+							"port": "4433",
 							"path": [
 								"quizzes",
-								"4"
+								"6759dddab2783fb241edf809"
 							]
 						},
 						"description": "Generated from cURL: curl -X DELETE http://localhost:5001/quizzes/1"
@@ -147,132 +127,44 @@
 			]
 		},
 		{
-			"name": "Questions Routes",
-			"item": [
-				{
-					"name": "Create Questions by QUIZ",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"quiz_id\": \"6758fb7d299ff577f6d473f5\",\n    \"question_text\": \"Qual o aproximado de PI\",\n    \"points\": 50,\n    \"answers\": [\n        {\"answer_text\": \"3.151692...\", \"is_correct\": true},\n        {\"answer_text\": \"18\", \"is_correct\": false},\n        {\"answer_text\": \"4.19873    \", \"is_correct\": false},\n        {\"answer_text\": \"Indefinido\", \"is_correct\": false}\n    ]\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:5001/questions",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5001",
-							"path": [
-								"questions"
-							]
-						},
-						"description": "Generated from cURL: curl -X POST -H \"Content-Type: application/json\" -d '{\n    \"quiz_id\": 1,\n    \"question_text\": \"What is the capital of France?\",\n    \"points\": 100,\n    \"answers\": [\n        {\"answer_text\": \"Paris\", \"is_correct\": true},\n        {\"answer_text\": \"London\", \"is_correct\": false},\n        {\"answer_text\": \"Rome\", \"is_correct\": false},\n        {\"answer_text\": \"Berlin\", \"is_correct\": false}\n    ]\n}' http://localhost:5001/questions"
-					},
-					"response": []
-				},
-				{
-					"name": "List Questions by QUIZ",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5001/questions/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5001",
-							"path": [
-								"questions",
-								"1"
-							]
-						},
-						"description": "Generated from cURL: curl -X GET http://localhost:5001/questions/1\n"
-					},
-					"response": []
-				},
-				{
-					"name": "Update Questions by Quiz",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "[\n    {\n        \"answers\": [\n            {\n                \"answer_text\": \"3.151692...\",\n                \"is_correct\": true\n            },\n            {\n                \"answer_text\": \"18\",\n                \"is_correct\": false\n            },\n            {\n                \"answer_text\": \"4.19873\",\n                \"is_correct\": false\n            },\n            {\n                \"answer_text\": \"Indefinido\",\n                \"is_correct\": false\n            }\n        ],\n        \"points\": 150,\n        \"question_text\": \"Qual o valor aproximado de PI\"\n    }\n]",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:5001/questions/6758fb7d299ff577f6d473f5",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5001",
-							"path": [
-								"questions",
-								"6758fb7d299ff577f6d473f5"
-							]
-						},
-						"description": "Generated from cURL: curl -X PUT -H \"Content-Type: application/json\" -d '{\n    \"question_text\": \"Updated Question?\",\n    \"points\": 150,\n    \"answers\": [\n        {\"id\": 1, \"answer_text\": \"Correct Answer\", \"is_correct\": true},\n        {\"id\": 2, \"answer_text\": \"Wrong Answer\", \"is_correct\": false}\n    ]\n}' http://localhost:5001/questions/{id}"
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Questions by ID",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:5001/questions/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5001",
-							"path": [
-								"questions",
-								"1"
-							]
-						},
-						"description": "Generated from cURL: curl -X DELETE http://localhost:5001/questions/1"
-					},
-					"response": []
+			"name": "List API Schema",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:4433/schema",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "4433",
+					"path": [
+						"schema"
+					]
 				}
-			]
+			},
+			"response": []
+		},
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:4433/",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "4433",
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
 		}
 	],
-	"auth": {
-		"type": "bearer",
-		"bearer": [
-			{
-				"key": "token",
-				"value": "97ba2dffd1ea031a26bf2e55de3b3a67f31f064196b9524d386bbef255f16645",
-				"type": "string"
-			}
-		]
-	},
 	"event": [
 		{
 			"listen": "prerequest",

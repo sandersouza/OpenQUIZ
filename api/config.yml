@@ -1,4 +1,0 @@
-mongo:
-  uri: "mongodb://mongo:27017/openquiz"
-auth:
-  bearer_token: "97ba2dffd1ea031a26bf2e55de3b3a67f31f064196b9524d386bbef255f16645"

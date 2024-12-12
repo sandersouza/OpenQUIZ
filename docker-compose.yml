@@ -1,15 +1,11 @@
 services:
   api:
     container_name: openquiz_api
-    build: ./api
+    build: ./application
     ports:
-      - "${flask_port}:5000"
+      - "${app_port}:4433"
     volumes:
-      - ./api:/app
-    environment:
-      - FLASK_APP=${flask_app}
-      - FLASK_ENV=${flask_env}
-      - MONGO_URI=${mongo_uri}
+      - ./application/app:/app/app
     depends_on:
       - mongo
 
