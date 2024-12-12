@@ -1,16 +1,16 @@
-# OpenQUIZ Game API 🎮
+# 🎮 OpenQUIZ Game API
 Create your own QUIZ server game with a simple management API. This project is in an early stage and can be an Open Source alternative to other QUIZ team games like Kahoot. This is a new version refactored to simplify the structure of Rest API, Routes and endpoints and many more other simplified schemes to speedup, and make this API 100% compliance with OpenAPI Specifications.
 
 In time...I change from old loved Flask RestAPI, to FastAPI + Hypercorn framework and support to HTTP/3 and QUIC with Python aioquic library. FastAPI is a framework with high performance, easy to learn, fast to code, ready for production 🚀
 
 ## Technologies 🖨️
-- 🖥️ Docker Container
-- 💾 MongoDB ( Data Persist )
-- 🐍 Python w/ FastAPI ( Support to HTTP/3 and QUIC )
-- 🌐 HTML 3.0 and CSS ( Frontend )
-- 🧪 Maybe... RabbitMQ ( Queue )
+- [x] 🖥️ Docker Container
+- [x] 💾 MongoDB ( Data Persist )
+- [x] 🐍 Python w/ FastAPI ( Support to HTTP/3 and QUIC )
+- [x] 🌐 HTML 3.0 and CSS ( Frontend )
+- [ ] 🧪 Maybe... RabbitMQ ( Queue )
 
-## In development 🪒
+## 🪒 In development
 - Frontend for Admin
 - Frontend for Logged Players
   - Player Profile
@@ -25,25 +25,24 @@ In time...I change from old loved Flask RestAPI, to FastAPI + Hypercorn framewor
 - Frontend for Ephemeral Players
 - OAUTH / SSO Login with Google
 
-## Setup Instructions 🛠️
+## 🛠️ Setup Instructions
 ```bash
 ### Build the stack and be happy 🎉
 $ docker compose -up -d --build
 ```
 
-## How can I test? 🧪
-```txt
-At this time no one update yours API Test tools ( like postman or insomnia ), to support HTTP/3 or QUIC. Then... use everything UI you want, I preffer Postman, and put into root of this repo, a Postman Collection with all you need.
+## 🧪 How can I test?
+>[!NOTE]
+>At this time no one update yours API Test tools ( like postman or insomnia ), to support HTTP/3 or QUIC. Then... use everything UI you want, I preffer Postman, and put into root of this repo, a Postman Collection with all you need. "And All You need is ❤️ " - Lennon. John 🪲
 
-"And All You need is Love" ❤️ - Lenon. John
+>[!TIP]
+>But... if you wanna make great tests in shell, use CURL with --http3 support! read more around the internet, how can you install it for your OS.
 
-But... if you wanna make great tests in shell, use CURL with --http3 support! read more around the internet, how can you install it for your OS.
-
-Above, endpoint, routes and payloads to testing.
-```
+>[!IMPORTANT]
+>Above, endpoint, routes and payloads to test OpenQUIZ API Rest.
 
 
-## Create a Quiz 🎲
+## 🎲 Create a Quiz
 ```txt
 Method  : { POST }
 Endpoint: https://{server}/quizzes/
@@ -71,13 +70,13 @@ Request Body ↓↓↓
 }
 ```
 
-## List Quizzes 🔎
+## 🔎 List Quizzes
 ```txt
 Method  : { GET }
 Endpoint: https://{server}/quizzes/
 ```
 
-## Edit a Quiz ✂️
+## ✂️ Edit a Quiz
 ```txt
 Method  : { PUT }
 Endpoint: https://{server}/quizzes/{id}
@@ -105,7 +104,7 @@ Request Body↓↓↓
 }
   ```
 
-## Delete a Quiz 🧨
+## 🧨 Delete a Quiz
 ```txt
 Method  : { DEL }
 Endpoint: https://{server}/quizzes/{id}
