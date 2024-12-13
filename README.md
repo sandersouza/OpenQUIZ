@@ -1,13 +1,14 @@
 ![Descrição da Imagem](banner.png)
-# 🎮 OpenQUIZ Game API
+# 🎮 OpenQUIZ Game
 Create your own QUIZ server game with a simple management API. This project is in an early stage and can be an Open Source alternative to other QUIZ team games like Kahoot. This is a new version refactored to simplify the structure of Rest API, Routes and endpoints and many more other simplified schemes to speedup, and make this API 100% compliance with OpenAPI Specifications.
 
 In time...I change from old loved Flask RestAPI, to FastAPI + Hypercorn framework and support to HTTP/3 and QUIC with Python aioquic library. FastAPI is a framework with high performance, easy to learn, fast to code, ready for production 🚀
 
 ## Technologies 🖨️
-- [x] 🖥️ Docker Container
+- [x] 🖥️ Containers ( podman, docker, rancher desktop and others)
 - [x] 💾 MongoDB ( Data Persist )
 - [x] 🐍 Python w/ FastAPI ( Support to HTTP/3 and QUIC )
+- [X] 📃 SwaggerUI for API Documentation
 - [x] 🌐 HTML 3.0 and CSS ( Frontend )
 - [ ] 🧪 Maybe... RabbitMQ ( Queue )
 
@@ -42,9 +43,15 @@ $ docker compose -up -d --build
 >[!IMPORTANT]
 >Above, endpoint, routes and payloads to test OpenQUIZ API Rest.
 
-
+## 📃  API Documentation ( SwaggerUI, Redoc and Schemas )
+To see SwaggerUI, Redoc or JSON Schemas... open any browser and access this addresses:
+```json
+Swagger - https://{server}:4433/docs
+Redoc   - https://{server}:4433/redoc
+Schema  - https://{server}:4433/schema
+```
 ## 🎲 Create a Quiz
-```txt
+```
 Method  : { POST }
 Endpoint: https://{server}/quizzes/
 Request Body ↓↓↓
