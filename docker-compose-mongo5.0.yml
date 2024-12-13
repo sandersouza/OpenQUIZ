@@ -14,7 +14,7 @@ services:
       - mongo
 
   mongo:
-    image: mongo:5.5
+    image: mongo:5.0
     container_name: openquiz_mongo
     ports:
       - "${mongo_port}:27017"

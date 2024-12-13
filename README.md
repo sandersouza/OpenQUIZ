@@ -4,7 +4,7 @@ Create your own QUIZ server game with a simple management API. This project is i
 
 In time...I change from old loved Flask RestAPI, to FastAPI + Hypercorn framework and support to HTTP/3 and QUIC with Python aioquic library. FastAPI is a framework with high performance, easy to learn, fast to code, ready for production 🚀
 
-## Technologies 🖨️
+## 🖨️ Technologies
 - [x] 🖥️ Containers ( podman, docker, rancher desktop and others)
 - [x] 💾 MongoDB ( Data Persist )
 - [x] 🐍 Python w/ FastAPI ( Support to HTTP/3 and QUIC )

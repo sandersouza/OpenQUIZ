@@ -24,11 +24,6 @@ async def shutdown():
 # Inclusão de roteadores
 app.include_router(quizzes.router, prefix="/quizzes", tags=["Quizzes"])
 
-# Rota para o endpoint schema
-@app.get("/schema")
-async def get_schema():
-    return app.openapi()
-
 # Rota para o endpoint raiz
 @app.get("/")
 async def root():
