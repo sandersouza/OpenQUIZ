@@ -28,9 +28,16 @@ In time...I change from old loved Flask RestAPI, to FastAPI + Hypercorn framewor
 - OAUTH / SSO Login with Google
 
 ## 🛠️ Setup Instructions
+>[!IMPORTANT]
+>Root directory contains 2 docker-composes... MongoDB 5.5 needs a CPU with AVX support, and with some old processors like XEON X5680 ( my fully functional old macpro 5,1 for example ), cannot be run it. Then I made 2 versions of compose. To use one of then, you need copy it ( or rename ) to docker-compose.yml. Bellow the name of 2 versions:
+>- docker-compose-mongo4.4.yml
+>- docker-compose-mongo5.5.yml
+
 ```bash
+### This example use MongoDB 5.5.
 ### Build the stack and be happy 🎉
-$ docker compose -up -d --build
+
+$ docker compose -f docker-compose-mongo5.5.yml -up -d --build
 ```
 
 ## 🧪 How can I test?
