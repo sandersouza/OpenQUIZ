@@ -52,7 +52,7 @@ $ docker compose -f docker-compose-mongo5.5.yml -up -d --build
 
 ## 📃  API Documentation ( SwaggerUI, Redoc and Schemas )
 To see SwaggerUI, Redoc or JSON Schemas... open any browser and access this addresses:
-```json
+```html
 Swagger - https://{server}:4433/docs
 Redoc   - https://{server}:4433/redoc
 Schema  - https://{server}:4433/schema
