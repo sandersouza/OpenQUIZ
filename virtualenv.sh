@@ -15,6 +15,10 @@ while [[ $# -gt 0 ]]; do
     case "$1" in
         -d)
             DIRECTORY="$2"
+            if [[ ! -d "$DIRECTORY" ]]; then
+                echo "Erro: O diretório especificado ($DIRECTORY) não existe."
+                exit 1
+            fi
             shift 2
             ;;
         create|cleanup|--help|-h)
@@ -35,69 +39,56 @@ REQUIREMENTS_FILE="$DIRECTORY/requirements.txt"
 
 function cleanup() {
     if [[ ! -d "$VENV_DIR" ]]; then
-        echo "Não há ambiente virtual no diretório especificado."
+        echo "Não há ambiente virtual no diretório especificado ($DIRECTORY)."
         return
     fi
 
-    echo "Preparando desativação e apagamento do ambiente virtual Python."
+    echo "Preparando para desativar e apagar o ambiente virtual Python ($VENV_DIR)."
     
-    env_status=$(which deactivate | grep "deactivate ()")
-    if [[ -n "$env_status" ]]; then
+    if [[ -n "$VIRTUAL_ENV" && "$VIRTUAL_ENV" == "$(realpath "$VENV_DIR")" ]]; then
         echo "Ambiente virtual ativo. Desativando..."
         deactivate
-        echo "ok."
     else
         echo "Ambiente virtual já está inativo."
     fi
 
-    echo -n "Apagando ambiente virtual..."
-    rm -Rf "$VENV_DIR"
-    echo "ok."
+    echo "Apagando o ambiente virtual..."
+    rm -rf "$VENV_DIR"
+    echo "Ambiente virtual removido."
 
-    echo -n "Limpando os caches do Python no diretório $DIRECTORY..."
-    find "$DIRECTORY" -type d -name "__pycache__" -depth -exec rm -r {} +
-    echo "ok."
+    echo "Limpando os caches do Python no diretório $DIRECTORY..."
+    find "$DIRECTORY" -type d -name "__pycache__" -exec rm -rf {} +
+    echo "Caches removidos."
     echo "Limpeza concluída!"
 }
 
 function create() {
     if [[ ! -f "$REQUIREMENTS_FILE" ]]; then
-        echo "Arquivo requirements.txt não encontrado no diretório especificado!"
+        echo "Arquivo requirements.txt não encontrado no diretório especificado ($DIRECTORY)."
         exit 1
     fi
 
-    # Cria ambiente virtual
     if [[ ! -d "$VENV_DIR" ]]; then
-        echo -n "Criando ambiente virtual em $VENV_DIR..."
+        echo "Criando ambiente virtual em $VENV_DIR..."
         python3 -m venv "$VENV_DIR"
-        echo "ok."
-    fi
-
-    echo -n "Ativando ambiente virtual..."
-    source "$VENV_DIR/bin/activate"
-    echo "ok."
-
-    # Instala as dependências
-    pip freeze | grep -f "$REQUIREMENTS_FILE" >/dev/null 2>&1
-    if [[ $? -ne 0 ]]; then
-        echo -n "Instalando dependências do $REQUIREMENTS_FILE..."
-        pip install --upgrade pip > /dev/null 2>&1
-        pip install -r "$REQUIREMENTS_FILE" -q
-        echo "ok."
+        echo "Ambiente virtual criado."
     else
-        echo "Todas as dependências já estão instaladas."
+        echo "Ambiente virtual já existe em $VENV_DIR."
     fi
 
-    echo -n "Verificando dependências..."
+    echo "Ativando o ambiente virtual..."
     source "$VENV_DIR/bin/activate"
-    echo "ok."
+
+    echo "Instalando dependências do $REQUIREMENTS_FILE..."
+    pip install --upgrade pip > /dev/null
+    pip install -r "$REQUIREMENTS_FILE"
+    echo "Dependências instaladas."
 
     deactivate
-    echo -e "Configuração concluída!\n"
-    echo -e "Para ativar o ambiente, use 'source $VENV_DIR/bin/activate'."
+    echo -e "Configuração concluída!\nPara ativar o ambiente, use:\n  source $VENV_DIR/bin/activate"
 }
 
-show_help() {
+function show_help() {
     echo -e "\nUso: $0 [ create | cleanup ] [-d <diretório>]"
     echo -e "\nOpções:"
     echo -e "  -h, --help      Mostra esta ajuda"
@@ -118,8 +109,8 @@ case "$arg" in
         exit 0
         ;;
     *)
-        if [ -z "$arg" ]; then
-            echo "Não há opção selecionada."
+        if [[ -z "$arg" ]]; then
+            echo "Nenhuma opção selecionada."
             show_help
         else
             echo "Opção inválida: $arg"

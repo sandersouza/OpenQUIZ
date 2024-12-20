@@ -64,7 +64,7 @@
 					"response": []
 				},
 				{
-					"name": "Update a QUIZ name",
+					"name": "Update a QUIZ",
 					"request": {
 						"method": "PUT",
 						"header": [
@@ -80,7 +80,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Variedades sobre Computação\",\n    \"questions\": [\n        {\n            \"question_text\": \"O que é Perl?\",\n            \"points\": 300,\n            \"answers\": [\n                {\"answer_text\": \"Uma linguagem de programação\", \"is_correct\": true},\n                {\"answer_text\": \"Uma ferramenta de design\", \"is_correct\": false},\n                {\"answer_text\": \"Uma programa para stress test\", \"is_correct\": false}\n            ]\n        }\n    ]\n}",
+							"raw": "{\n    \"name\": \"Variedades sobre Computação\",\n    \"questions\": [\n        {\n            \"question_text\": \"O que é Perl?\",\n            \"points\": 150,\n            \"answers\": [\n                {\"answer_text\": \"Uma linguagem de programação\", \"is_correct\": true},\n                {\"answer_text\": \"Uma ferramenta de design\", \"is_correct\": false},\n                {\"answer_text\": \"Uma programa para stress test\", \"is_correct\": false}\n            ]\n        },\n        {\n            \"question_text\": \"O que é FastAPI?\",\n            \"points\": 150,\n            \"answers\": [\n                {\"answer_text\": \"Uma linguagem de programação\", \"is_correct\": false},\n                {\"answer_text\": \"Uma ferramenta de design\", \"is_correct\": false},\n                {\"answer_text\": \"É um framework Python para RestAPI\", \"is_correct\": true}\n            ]\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -88,7 +88,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:4433/quizzes/6759dddab2783fb241edf809",
+							"raw": "https://localhost:4433/quizzes/675a11f5aaf9b3a7f7249e51",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -96,7 +96,7 @@
 							"port": "4433",
 							"path": [
 								"quizzes",
-								"6759dddab2783fb241edf809"
+								"675a11f5aaf9b3a7f7249e51"
 							]
 						},
 						"description": "Edit an existent quiz:  \n  \nRoute -> /quizzes/{quiz_id}"
@@ -127,25 +127,6 @@
 			]
 		},
 		{
-			"name": "List API Schema",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://localhost:4433/schema",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "4433",
-					"path": [
-						"schema"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Health Check",
 			"request": {
 				"method": "GET",
@@ -165,6 +146,16 @@
 			"response": []
 		}
 	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "f575e88935ac5bfeaf7047d1d90da343a20fb16822abe5d0188369b91e09efdf",
+				"type": "string"
+			}
+		]
+	},
 	"event": [
 		{
 			"listen": "prerequest",

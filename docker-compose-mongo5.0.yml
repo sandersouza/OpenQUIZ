@@ -9,6 +9,7 @@ services:
       - ./application/app:/app/app
       - ./application/hypercorn_config.py:/app/hypercorn_config.py
       - ./.env:/app/app/.env
+      - ./application/config.yml:/app/config.yml
 
     depends_on:
       - mongo
@@ -38,6 +39,21 @@ services:
     depends_on:
       mongo:
         condition: service_healthy
+  
+  curl_quic:
+    command:
+    - sh
+    container_name: openquiz_curl_quic
+    depends_on:
+    - api
+    entrypoint: /bin/sh
+    environment:
+      CURL_HTTP3: 'true'
+    image: curlimages/curl:latest
+    stdin_open: true
+    tty: true
+    volumes:
+    - ./application/app:/app/app
 
 volumes:
   mongo_data:

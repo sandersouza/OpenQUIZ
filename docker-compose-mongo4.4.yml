@@ -9,7 +9,7 @@ services:
       - ./application/app:/app/app
       - ./application/hypercorn_config.py:/app/hypercorn_config.py
       - ./.env:/app/app/.env
-
+      - ./application/config.yml:/app/config.yml
     depends_on:
       - mongo
 
@@ -22,9 +22,9 @@ services:
       - mongo_data:/data/db
     healthcheck:
       test: ["CMD", "mongo", "--eval", "'db.adminCommand(\"ping\")'"]
-      interval: ${mongo_health_interval}
-      timeout: ${mongo_health_timeout}
-      retries: ${mongo_health_retries}
+      interval: "${mongo_health_interval}"
+      timeout: "${mongo_health_timeout}"
+      retries: "${mongo_health_retries}"
 
   mongo-express:
     image: mongo-express:1.0.0-alpha.4
@@ -38,6 +38,19 @@ services:
     depends_on:
       mongo:
         condition: service_healthy
+
+  openquiz_curl_quic:
+    image: curlimages/curl:latest
+    container_name: openquiz_curl_quic
+    tty: true
+    stdin_open: true
+    depends_on:
+      - api
+    volumes:
+      - ./application/app:/app/app
+    entrypoint: ["/bin/sh"]
+    environment:
+      CURL_HTTP3: "true"
 
 volumes:
   mongo_data:

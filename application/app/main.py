@@ -1,9 +1,18 @@
-from fastapi import FastAPI
-from fastapi.openapi.docs import get_swagger_ui_html
-from fastapi.openapi.utils import get_openapi
+from fastapi import FastAPI, HTTPException, Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from app.routers import quizzes
 from app.database import connect_to_mongo
+import yaml
 
+# Carregar token do arquivo config.yml
+def load_token():
+    with open("config.yml", "r") as file:
+        config = yaml.safe_load(file)
+    return config["auth"]["bearer_token"]
+
+BEARER_TOKEN = load_token()
+
+# Instância do FastAPI
 app = FastAPI(
     title="OpenQUIZ",
     version="1.0.0",
@@ -11,6 +20,13 @@ app = FastAPI(
     redoc_url="/redoc",  # Caminho para o ReDoc
     openapi_url="/openapi.json"  # Caminho para o JSON do OpenAPI
 )
+
+# Middleware de autenticação
+security = HTTPBearer()
+
+async def authenticate(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    if credentials.scheme != "Bearer" or credentials.credentials != BEARER_TOKEN:
+        raise HTTPException(status_code=403, detail="Invalid or missing Bearer Token")
 
 @app.on_event("startup")
 async def startup():
@@ -21,18 +37,12 @@ async def startup():
 async def shutdown():
     print("Encerrando aplicação...")
 
-# Inclusão de roteadores
-app.include_router(quizzes.router, prefix="/quizzes", tags=["Quizzes"])
+# Inclusão de roteadores com autenticação
+app.include_router(
+    quizzes.router, prefix="/quizzes", tags=["Quizzes"], dependencies=[Depends(authenticate)]
+)
 
-# Rota para o endpoint raiz
-@app.get("/")
+# Rota para o endpoint raiz (protegida)
+@app.get("/", dependencies=[Depends(authenticate)])
 async def root():
     return {"openquiz": "status ok"}
-
-@app.get("/docs", include_in_schema=False)
-async def custom_swagger_ui_html():
-    return get_swagger_ui_html(openapi_url="/openapi.json", title="API Docs")
-
-@app.get("/openapi.json", include_in_schema=False)
-async def custom_openapi():
-    return get_openapi(title="FastAPI", version="1.0.0", routes=app.routes)
