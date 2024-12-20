@@ -52,6 +52,18 @@ services:
     environment:
       CURL_HTTP3: "true"
 
+  frontend-admin:
+    image: nginx:latest
+    container_name: openquiz_frontend_admin
+    ports:
+      - "8080:80"
+    volumes:
+      - ./frontend-admin/:/usr/share/nginx/html:ro
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    restart: unless-stopped
+    depends_on:
+      - api
+
 volumes:
   mongo_data:
     driver: local
