@@ -29,9 +29,7 @@ In time...I change from old loved Flask RestAPI, to FastAPI + Hypercorn framewor
 
 ## 🛠️ Setup Instructions
 >[!IMPORTANT]
->Root directory contains 2 docker-composes... MongoDB 5.5 needs a CPU with AVX support, and with some old processors like XEON X5680 ( my fully functional old macpro 5,1 for example ), cannot be run it. Then I made 2 versions of compose. To use one of then use -f flag in docker/podman compose command like instructions bellow.
->- docker-compose-mongo4.4.yml ( More compatible with processors withour AVX)
->- docker-compose-mongo5.5.yml ( Fastest then 4.4, but need AVX support in processor)
+> You need to select MongoDB version in .env ( instructions inside than )... MongoDB 5.0 needs a CPU with AVX support, and with some old processors like XEON X5680 ( my fully functional old macpro 5,1 for example ), cannot be run it. Then I made 2 versions of compose.
 
 ```bash
 ### This example use MongoDB 5.5.
