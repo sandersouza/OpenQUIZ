@@ -1,0 +1,13 @@
+/* Geral */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #1e1e1e;
+    color: #ffffff;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+    transition: width 0.3s ease;
+}
