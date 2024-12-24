@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>WebCurl</title>
+</head>
+<body>
+    <div class="container">
+        <!-- Barra lateral de Queries -->
+        <div class="queries-sidebar">
+            <div class="queries-header">
+                <h2 class="queries-title">Queries</h2>
+                <div class="queries-buttons">
+                    <button id="new-query-btn" title="Create a new query">+</button>
+                    <button id="toggle-sidebar-btn" title="Toggle sidebar">⮘</button>
+                </div>
+            </div>
+            <ul id="queries-list">
+                <!-- Exemplos dinâmicos -->
+                {% for query in queries %}
+                <li class="query-item">
+                    <div class="query-row">
+                        <span class="query-name">{{ query.name }}</span>
+                        <button class="menu-button" aria-label="Query menu">...</button>
+                        <div class="menu-options hidden">
+                            <button class="rename-query" data-query-id="{{ query._id }}">Renomear</button>
+                            <button class="duplicate-query" data-query-id="{{ query._id }}">Duplicar</button>
+                            <button class="delete-query" data-query-id="{{ query._id }}">Apagar</button>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <!-- Editor de requisições -->
+        <div class="query-editor">
+            <!-- Configurações da requisição -->
+            <div class="request-config">
+                <button id="protocol-toggle-btn" class="protocol-toggle-btn" title="Toggle between HTTP and HTTP/3">HTTP</button>
+                <select id="query-method" aria-label="HTTP Method">
+                    <option value="GET">GET</option>
+                    <option value="POST">POST</option>
+                    <option value="PUT">PUT</option>
+                    <option value="DELETE">DELETE</option>
+                </select>
+                <input type="text" id="query-url" placeholder="API URL/URI" aria-label="API URL">
+            </div>
+            
+            <!-- Corpo e Headers -->
+            <textarea id="query-body" placeholder="Request Body" aria-label="Request Body"></textarea>
+            <textarea id="query-headers" placeholder="Headers (JSON format)" aria-label="Headers"></textarea>
+            
+            <!-- Token e Execução -->
+            <div class="request-action">
+                <input type="text" id="bearer-token" placeholder="Bearer Token" aria-label="Bearer Token">
+                <button id="execute-query-btn" aria-label="Execute Query">Execute</button>
+            </div>
+            
+            <!-- Headers da Resposta -->
+            <div id="response-headers" class="response-headers" aria-live="polite">Response headers</div>
+            
+            <!-- JSON da Resposta -->
+            <pre id="response-output" class="json-highlight" aria-live="polite">Response</pre>
+        </div>
+    </div>
+    <!-- Scripts divididos -->
+    <script src="/scripts/protocol.js"></script>
+    <script src="/scripts/highlight.js"></script>
+    <script src="/scripts/query_manager.js"></script>
+    <script src="/scripts/sidebar.js"></script>
+</body>
+</html>

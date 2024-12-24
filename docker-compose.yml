@@ -39,19 +39,6 @@ services:
       mongo:
         condition: service_healthy
 
-  openquiz_curl_quic:
-    image: curlimages/curl:latest
-    container_name: openquiz_curl_quic
-    tty: true
-    stdin_open: true
-    depends_on:
-      - api
-    volumes:
-      - ./application/app:/app/app
-    entrypoint: ["/bin/sh"]
-    environment:
-      CURL_HTTP3: "true"
-
   frontend-admin:
     image: nginx:latest
     container_name: openquiz_frontend_admin
@@ -64,6 +51,12 @@ services:
     depends_on:
       - api
 
+  # CURL with HTTP3/QUIC support for teste purposes.
+  openquiz_curl_quic:
+    image: ymuski/curl-http3:latest
+    container_name: openquiz_curl_quic
+    entrypoint: /bin/sh -c "while true; do sleep 3600; done"
+    
 volumes:
   mongo_data:
     driver: local
