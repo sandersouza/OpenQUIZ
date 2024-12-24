@@ -42,7 +42,7 @@ document.getElementById("new-query-btn").addEventListener("click", () => {
 function addQueryToSidebar(queryName, queryId, method) {
     const queriesList = document.getElementById("queries-list");
     const newItem = document.createElement("li");
-    newItem.innerHTML = `<strong>[ ${method} ]</strong> ${queryName}`;
+    newItem.innerHTML = `<div class="query-name"><strong>[ ${method} ]</strong> ${queryName}</div>`;
     newItem.dataset.queryId = queryId;
     newItem.classList.add("query-item");
 

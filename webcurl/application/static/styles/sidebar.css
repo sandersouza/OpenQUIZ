@@ -15,6 +15,15 @@
     overflow: hidden;
 }
 
+.queries-sidebar.query {
+    background-color: #1e1e1e;
+    border: 1px solid #555;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: small;
+    font-family: Consolas, "Courier New", monospace;
+}
+
 #toggle-sidebar-btn {
     background-color: #4caf50;
     color: white;

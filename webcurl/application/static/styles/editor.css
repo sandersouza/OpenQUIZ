@@ -59,7 +59,7 @@ textarea {
     border-radius: 5px;
     padding: 10px;
     margin-bottom: 10px;
-    height: 150px;
+    min-height: 150px;
     resize: vertical;
 }
 
