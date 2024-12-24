@@ -28,7 +28,7 @@
     background-color: #3e8e41;
 }
 
-#query-method, #query-url, #bearer-token {
+#query-url, #bearer-token {
     height: 40px;
     background-color: #3e3e3e;
     color: white;
@@ -38,8 +38,16 @@
     width: 100%;
 }
 
+#query-method {
+    height: 40px;
+    background-color: #3e3e3e;
+    color: white;
+    border: 1px solid #555;
+    border-radius: 5px;
+    padding: 0 10px;
+}
+
 textarea {
-    width: 100%;
     background-color: #3e3e3e;
     color: white;
     border: 1px solid #555;
@@ -47,4 +55,32 @@ textarea {
     padding: 10px;
     margin-bottom: 10px;
     height: 150px;
+    resize: vertical;
+}
+
+.request-body-txt {
+    background-color: #3e3e3e;
+    color: white;
+    border: 1px solid #555;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    height: 50%;
+    resize: vertical;
+}
+
+#execute-query-btn {
+    height: 40px; /* Altura consistente com outros campos */
+    background-color: #4caf50; /* Cor de fundo verde */
+    color: white; /* Texto em branco */
+    border: none; /* Sem bordas */
+    padding: 5px 15px; /* Espaçamento interno */
+    border-radius: 5px; /* Bordas arredondadas */
+    cursor: pointer; /* Cursor de clique */
+    font-weight: bold; /* Texto em negrito */
+    transition: background-color 0.3s ease; /* Transição suave para hover */
+}
+
+#execute-query-btn:hover {
+    background-color: #3e8e41; /* Cor mais escura ao passar o mouse */
 }
