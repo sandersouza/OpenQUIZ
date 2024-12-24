@@ -1,0 +1,8 @@
+mongodb:
+  uri: "mongodb://localhost:27017/"
+  database: "webcurl"
+
+flask:
+  debug: true
+  host: "0.0.0.0"
+  port: 8082

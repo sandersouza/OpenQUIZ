@@ -1,6 +1,8 @@
 from flask import Blueprint, request, jsonify
 from bson.objectid import ObjectId
-from config import queries_collection
+from database import db  # Importa a conexão com o banco de dados
+
+queries_collection = db.queries
 
 queries_bp = Blueprint("queries", __name__, url_prefix="/queries")
 

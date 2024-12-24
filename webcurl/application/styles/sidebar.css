@@ -6,11 +6,27 @@
     min-width: 250px;
     width: 250px;
     flex-shrink: 0;
+    transition: transform 0.3s ease, width 0.3s ease;
 }
 
 .queries-sidebar.hidden {
-    width: 50px;
+    transform: translateX(-200px); /* Move a sidebar para fora */
+    width: 50px; /* Reduz a largura */
     overflow: hidden;
+}
+
+#toggle-sidebar-btn {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#toggle-sidebar-btn:hover {
+    background-color: #3e8e41;
 }
 
 .queries-header {

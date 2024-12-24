@@ -107,5 +107,4 @@ toggleBtn.addEventListener("click", () => {
     }
 });
 
-// Carregar todas as queries ao iniciar
 loadAllQueries();
