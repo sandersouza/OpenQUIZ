@@ -43,29 +43,26 @@
 }
 
 .queries-label {
-    display: flex;
     background-color: #1E1E1E;
     border: 1px solid #555;
     border-radius: 5px;
     padding: 10px;
     font-size: small;
-    font-family: Consolas, "Courier New", monospace;
+    margin-bottom: 5px;
+    position: relative;
+}
+
+.queries-label:hover,
+.query-item.selected .queries-label {
+    background-color: #333;
+    border-color: #777;
+    cursor: pointer;
 }
 
 .queries-method {
     font-size: small;
     font-family: Consolas, "Courier New", monospace;
     color: #555;
-}
-
-.queries-label:hover {
-    display: flex;
-    background-color: #333;
-    border: 1px solid #555;
-    border-radius: 5px;
-    padding: 10px;
-    font-size: small;
-    font-family: Consolas, "Courier New", monospace;
 }
 
 .queries-buttons {
@@ -90,4 +87,63 @@ ul#queries-list {
     list-style: none;
     padding: 0;
     cursor: pointer;
+}
+
+#new-blank-query-btn {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#new-blank-query-btn:hover {
+    background-color: #3e8e41;
+}
+
+/* Botão do menu (...) */
+.menu-button {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-left: auto; /* Alinha à direita */
+    position: relative;
+}
+
+/* Menu de opções */
+.menu-options {
+    position: absolute;
+    top: 100%; /* Abaixo do botão */
+    right: 0; /* Alinha à direita */
+    background-color: #1E1E1E;
+    border: 1px solid #555;
+    border-radius: 5px;
+    padding: 5px 0;
+    display: none; /* Ocultar inicialmente */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    z-index: 10; /* Garantir que fique sobre outros elementos */
+}
+
+/* Menu visível */
+.menu-options.visible {
+    display: block;
+}
+
+/* Botões dentro do menu */
+.menu-options button {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 0.9rem;
+    padding: 5px 10px;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+
+.menu-options button:hover {
+    background-color: #333;
 }

@@ -84,8 +84,26 @@ textarea {
     cursor: pointer; /* Cursor de clique */
     font-weight: bold; /* Texto em negrito */
     transition: background-color 0.3s ease; /* Transição suave para hover */
+    width: 90px;
 }
 
 #execute-query-btn:hover {
+    background-color: #3e8e41; /* Cor mais escura ao passar o mouse */
+}
+
+#save-query-btn {
+    height: 40px; /* Altura consistente com outros botões */
+    background-color: #4caf50; /* Cor de fundo verde */
+    color: white; /* Texto em branco */
+    border: none; /* Sem bordas */
+    padding: 5px 15px; /* Espaçamento interno */
+    border-radius: 5px; /* Bordas arredondadas */
+    cursor: pointer; /* Cursor de clique */
+    font-weight: bold; /* Texto em negrito */
+    transition: background-color 0.3s ease; /* Transição suave para hover */
+    width: 90px;
+}
+
+#save-query-btn:hover {
     background-color: #3e8e41; /* Cor mais escura ao passar o mouse */
 }

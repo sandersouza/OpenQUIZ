@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/static/styles/editor.css">
     <link rel="stylesheet" href="/static/styles/response.css">
     <title>WebCurl</title>
-</head>    
+</head>
 <body>
     <div class="container">
         <!-- Barra lateral de Queries -->
@@ -16,7 +16,7 @@
             <div class="queries-header">
                 <h2 class="queries-title">Queries</h2>
                 <div class="queries-buttons">
-                    <button id="new-query-btn" title="Create a new query">+</button>
+                    <button id="new-blank-query-btn" title="Create a new blank query">+</button>
                     <button id="toggle-sidebar-btn" title="Toggle sidebar">⮘</button>
                 </div>
             </div>
@@ -58,8 +58,9 @@
             <!-- Token e Execução -->
             <div class="request-action">
                 <input type="text" id="bearer-token" placeholder="Bearer Token" aria-label="Bearer Token">
+                <button id="save-query-btn" aria-label="Save Query">Save</button>
                 <button id="execute-query-btn" aria-label="Execute Query">Execute</button>
-            </div>
+            </div>            
             
             <!-- Headers da Resposta -->
             <div id="response-headers" class="response-headers" aria-live="polite">Response headers</div>
@@ -68,10 +69,34 @@
             <pre id="response-output" class="json-highlight" aria-live="polite">Response</pre>
         </div>
     </div>
+
+    <!-- Mensagem de feedback -->
+    <div id="feedback-message" class="feedback-message hidden"></div>
+
     <!-- Scripts divididos -->
     <script src="/static/scripts/protocol.js"></script>
     <script src="/static/scripts/highlight.js"></script>
     <script src="/static/scripts/query_manager.js"></script>
     <script src="/static/scripts/sidebar.js"></script>
+    <script>
+        // Script para gerenciar o menu
+        document.addEventListener("click", (event) => {
+            // Fechar menus abertos
+            document.querySelectorAll(".menu-options.visible").forEach((menu) => {
+                menu.classList.remove("visible");
+                menu.classList.add("hidden");
+            });
+
+            const target = event.target;
+
+            // Verificar se clicou no botão do menu
+            if (target.classList.contains("menu-button")) {
+                const menu = target.nextElementSibling;
+                menu.classList.toggle("hidden");
+                menu.classList.toggle("visible");
+                event.stopPropagation();
+            }
+        });
+    </script>
 </body>
 </html>

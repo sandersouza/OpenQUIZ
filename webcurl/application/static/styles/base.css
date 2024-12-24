@@ -11,3 +11,27 @@ body {
     height: 100vh;
     transition: width 0.3s ease;
 }
+
+.feedback-message {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    z-index: 1000;
+    transition: opacity 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.feedback-message.visible {
+    opacity: 1;
+}
+
+.feedback-message.hidden {
+    opacity: 0;
+}
