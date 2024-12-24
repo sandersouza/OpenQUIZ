@@ -42,21 +42,9 @@ document.getElementById("new-query-btn").addEventListener("click", () => {
 function addQueryToSidebar(queryName, queryId, method) {
     const queriesList = document.getElementById("queries-list");
     const newItem = document.createElement("li");
-    newItem.innerHTML = `<div class="query-name"><strong>[ ${method} ]</strong> ${queryName}</div>`;
+    newItem.innerHTML = `<div class="queries-label"><span class="queries-method">[${method}]</span>&nbsp;${queryName}</div>`;
     newItem.dataset.queryId = queryId;
     newItem.classList.add("query-item");
-
-    // Eventos de mouseover e mouseout para trocar cor
-    newItem.addEventListener("mouseover", () => {
-        if (!newItem.classList.contains("selected")) {
-            newItem.style.backgroundColor = "#1E1E1E"; // Cor ao passar o mouse
-        }
-    });
-    newItem.addEventListener("mouseout", () => {
-        if (!newItem.classList.contains("selected")) {
-            newItem.style.backgroundColor = ""; // Remove a cor ao retirar o mouse
-        }
-    });
 
     // Evento de clique para carregar a query selecionada
     newItem.addEventListener("click", () => loadQuery(queryId, newItem));
