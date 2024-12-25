@@ -86,6 +86,60 @@ function loadQuery(queryId, selectedItem) {
         });
 }
 
+// Função para recarregar o sidebar
+function reloadSidebar() {
+    const queriesList = document.getElementById("queries-list");
+    queriesList.innerHTML = ""; // Limpa a lista atual
+
+    fetch("/queries")
+        .then((res) => res.json())
+        .then((queries) => {
+            queries.forEach((query) => {
+                addQueryToSidebar(query.name, query._id, query.method);
+            });
+        })
+        .catch((err) => {
+            console.error("Error reloading sidebar:", err);
+        });
+}
+
+// Função para carregar uma query no editor
+function loadQuery(queryId, selectedItem) {
+    fetch(`/queries/${queryId}`)
+        .then((res) => res.json())
+        .then((data) => {
+            if (data.error) {
+                showFeedbackMessage(`Error loading query: ${data.error}`);
+                return;
+            }
+
+            // Preencher os campos com os dados da query
+            urlField.value = data.url || "";
+            methodField.value = data.method || "GET";
+            bodyField.value = data.body || "";
+            headersField.value = Object.entries(data.headers || {})
+                .map(([key, value]) => `${key}: ${value}`)
+                .join("\n");
+            bearerField.value = data.bearer_token || "";
+            protocolBtn.textContent = data.protocol || "HTTP";
+
+            // Atualizar o ID e o nome da query carregada
+            currentQueryId = data._id;
+            currentQueryName = data.name;
+
+            // Alterar estilo de seleção
+            document.querySelectorAll(".query-item").forEach((item) => {
+                item.classList.remove("selected");
+                item.style.backgroundColor = ""; // Remove fundo de seleção de outros itens
+            });
+            selectedItem.classList.add("selected");
+            selectedItem.style.backgroundColor = "#1E1E1E"; // Fundo da query selecionada
+        })
+        .catch((err) => {
+            console.error("Error loading query:", err);
+        });
+}
+
 // Alternar visibilidade da barra lateral
 const sidebar = document.querySelector(".queries-sidebar");
 const toggleBtn = document.getElementById("toggle-sidebar-btn");

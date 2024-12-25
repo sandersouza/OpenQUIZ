@@ -1,46 +1,3 @@
-// Selecionar os campos do editor
-const protocolBtn = document.getElementById("protocol-toggle-btn");
-const methodField = document.getElementById("query-method");
-const urlField = document.getElementById("query-url");
-const bodyField = document.getElementById("query-body");
-const headersField = document.getElementById("query-headers");
-const bearerField = document.getElementById("bearer-token");
-
-// Variáveis para armazenar o estado atual
-let currentQueryId = null;
-let currentQueryName = null;
-
-// Função para exibir mensagem de feedback
-function showFeedbackMessage(message) {
-    const feedbackElement = document.getElementById("feedback-message");
-    feedbackElement.textContent = message;
-    feedbackElement.classList.remove("hidden");
-    feedbackElement.classList.add("visible");
-
-    // Remover a mensagem após 2 segundos
-    setTimeout(() => {
-        feedbackElement.classList.remove("visible");
-        feedbackElement.classList.add("hidden");
-    }, 2000);
-}
-
-// Função para recarregar o sidebar
-function reloadSidebar() {
-    const queriesList = document.getElementById("queries-list");
-    queriesList.innerHTML = ""; // Limpa a lista atual
-
-    fetch("/queries")
-        .then((res) => res.json())
-        .then((queries) => {
-            queries.forEach((query) => {
-                addQueryToSidebar(query.name, query._id, query.method);
-            });
-        })
-        .catch((err) => {
-            console.error("Error reloading sidebar:", err);
-        });
-}
-
 // Função para processar os headers em JSON
 function parseHeaders(headersText) {
     const headers = {};
@@ -61,7 +18,21 @@ function parseHeaders(headersText) {
     return headers;
 }
 
-// Função para salvar a query (criar ou atualizar)
+// Função para validar e processar o corpo da requisição
+function validateRequestBody() {
+    const bodyValue = bodyField.value.trim();
+    if (bodyValue) {
+        try {
+            return JSON.parse(bodyValue); // Valida o JSON
+        } catch (e) {
+            showFeedbackMessage("Request Body must be in valid JSON format.");
+            throw new Error("Invalid JSON format in request body");
+        }
+    }
+    return null; // Retorna null se o corpo estiver vazio
+}
+
+// Função para salvar ou atualizar uma query
 function saveQuery() {
     let parsedHeaders = {};
     let parsedBody = "";
@@ -73,17 +44,13 @@ function saveQuery() {
         return; // Não prosseguir se os headers forem inválidos
     }
 
-    // Validar o body como JSON, se preenchido
-    if (bodyField.value.trim() !== "") {
-        try {
-            parsedBody = JSON.parse(bodyField.value);
-        } catch (e) {
-            showFeedbackMessage("Request Body must be in valid JSON format.");
-            return;
-        }
+    // Validar e processar o corpo da requisição
+    try {
+        parsedBody = validateRequestBody();
+    } catch (e) {
+        return; // Não prosseguir se o corpo for inválido
     }
 
-    // Dados da query
     const queryData = {
         protocol: protocolBtn.textContent.trim(),
         method: methodField.value,
@@ -94,7 +61,6 @@ function saveQuery() {
     };
 
     if (currentQueryId) {
-        // Atualizar query existente
         fetch(`/queries/${currentQueryId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -106,12 +72,11 @@ function saveQuery() {
                     showFeedbackMessage(`Error: ${data.error}`);
                 } else {
                     showFeedbackMessage("Query updated successfully!");
-                    reloadSidebar(); // Recarrega o sidebar após salvar
+                    reloadSidebar();
                 }
             })
             .catch((err) => console.error("Error updating query:", err));
     } else {
-        // Criar uma nova query
         const queryName = prompt("Enter a name for the new query:");
         if (!queryName || queryName.trim() === "") {
             showFeedbackMessage("Query name is required!");
@@ -130,9 +95,9 @@ function saveQuery() {
                     showFeedbackMessage(`Error: ${data.error}`);
                 } else {
                     showFeedbackMessage("Query created successfully!");
-                    reloadSidebar(); // Recarrega o sidebar após criar
-                    currentQueryId = data.id; // Atualizar o ID da nova query
-                    currentQueryName = queryName; // Atualizar o nome da nova query
+                    reloadSidebar();
+                    currentQueryId = data.id;
+                    currentQueryName = queryName;
                 }
             })
             .catch((err) => {
@@ -140,43 +105,6 @@ function saveQuery() {
                 showFeedbackMessage("An error occurred while saving the query.");
             });
     }
-}
-
-// Função para carregar uma query no editor
-function loadQuery(queryId, selectedItem) {
-    fetch(`/queries/${queryId}`)
-        .then((res) => res.json())
-        .then((data) => {
-            if (data.error) {
-                showFeedbackMessage(`Error loading query: ${data.error}`);
-                return;
-            }
-
-            // Preencher os campos com os dados da query
-            urlField.value = data.url || "";
-            methodField.value = data.method || "GET";
-            bodyField.value = data.body || "";
-            headersField.value = Object.entries(data.headers || {})
-                .map(([key, value]) => `${key}: ${value}`)
-                .join("\n");
-            bearerField.value = data.bearer_token || "";
-            protocolBtn.textContent = data.protocol || "HTTP";
-
-            // Atualizar o ID e o nome da query carregada
-            currentQueryId = data._id;
-            currentQueryName = data.name;
-
-            // Alterar estilo de seleção
-            document.querySelectorAll(".query-item").forEach((item) => {
-                item.classList.remove("selected");
-                item.style.backgroundColor = ""; // Remove fundo de seleção de outros itens
-            });
-            selectedItem.classList.add("selected");
-            selectedItem.style.backgroundColor = "#1E1E1E"; // Fundo da query selecionada
-        })
-        .catch((err) => {
-            console.error("Error loading query:", err);
-        });
 }
 
 // Função para executar a query

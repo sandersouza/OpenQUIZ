@@ -27,7 +27,8 @@ def execute_query():
         curl_command += ["-H", f'"{key}: {value}"']
 
     if body:
-        curl_command += ["-d", f'"{body}"']
+        body_doublequote = json.dumps(body)
+        curl_command += ["-d", f'\'{body_doublequote}\'']
 
     curl_command_str = " ".join(curl_command)
     print("Generated CURL Command:", curl_command_str)
