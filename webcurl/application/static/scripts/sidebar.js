@@ -1,4 +1,4 @@
-// Carregar todas as queries do backend
+// Função para carregar todas as queries do backend
 function loadAllQueries() {
     fetch("/queries")
         .then((res) => res.json())
@@ -14,7 +14,7 @@ function loadAllQueries() {
         });
 }
 
-// Adicionar query na sidebar
+// Função para adicionar query na sidebar
 function addQueryToSidebar(queryName, queryId, method) {
     const queriesList = document.getElementById("queries-list");
     const newItem = document.createElement("li");
@@ -28,12 +28,14 @@ function addQueryToSidebar(queryName, queryId, method) {
     newItem.classList.add("query-item");
 
     // Evento de clique para carregar a query selecionada
-    newItem.addEventListener("click", () => loadQuery(queryId, newItem));
+    newItem.addEventListener("click", () => {
+        loadQuery(queryId, newItem);
+    });
 
     queriesList.appendChild(newItem);
 }
 
-// Exibir mensagem de feedback
+// Função para exibir mensagem de feedback
 function showFeedbackMessage(message) {
     const feedbackElement = document.getElementById("feedback-message");
     feedbackElement.textContent = message;
@@ -47,7 +49,7 @@ function showFeedbackMessage(message) {
     }, 2000);
 }
 
-// Carregar dados da query no editor
+// Função para carregar dados da query no editor
 function loadQuery(queryId, selectedItem) {
     fetch(`/queries/${queryId}`)
         .then((res) => res.json())
@@ -60,10 +62,15 @@ function loadQuery(queryId, selectedItem) {
             // Preencher os campos com os dados da query
             document.getElementById("query-url").value = data.url || "";
             document.getElementById("query-method").value = data.method || "GET";
-            document.getElementById("query-body").value = data.body || "";
-            document.getElementById("query-headers").value = Object.entries(data.headers || {})
-                .map(([key, value]) => `${key}: ${value}`)
-                .join("\n");
+
+            // Converter o body para JSON formatado antes de exibir
+            document.getElementById("query-body").value = data.body
+                ? JSON.stringify(data.body, null, 2)
+                : "";
+
+            // Preencher os headers
+            setHeadersToTable(data.headers || {});
+
             document.getElementById("bearer-token").value = data.bearer_token || "";
             protocolBtn.textContent = data.protocol || "HTTP";
 
@@ -76,10 +83,8 @@ function loadQuery(queryId, selectedItem) {
             // Alterar estilo de seleção
             document.querySelectorAll(".query-item").forEach((item) => {
                 item.classList.remove("selected");
-                item.style.backgroundColor = ""; // Remove fundo de seleção de outros itens
             });
             selectedItem.classList.add("selected");
-            selectedItem.style.backgroundColor = "#1E1E1E"; // Fundo da query selecionada
         })
         .catch((err) => {
             console.error("Error loading query:", err);
@@ -103,43 +108,6 @@ function reloadSidebar() {
         });
 }
 
-// Função para carregar uma query no editor
-function loadQuery(queryId, selectedItem) {
-    fetch(`/queries/${queryId}`)
-        .then((res) => res.json())
-        .then((data) => {
-            if (data.error) {
-                showFeedbackMessage(`Error loading query: ${data.error}`);
-                return;
-            }
-
-            // Preencher os campos com os dados da query
-            urlField.value = data.url || "";
-            methodField.value = data.method || "GET";
-            bodyField.value = data.body || "";
-            headersField.value = Object.entries(data.headers || {})
-                .map(([key, value]) => `${key}: ${value}`)
-                .join("\n");
-            bearerField.value = data.bearer_token || "";
-            protocolBtn.textContent = data.protocol || "HTTP";
-
-            // Atualizar o ID e o nome da query carregada
-            currentQueryId = data._id;
-            currentQueryName = data.name;
-
-            // Alterar estilo de seleção
-            document.querySelectorAll(".query-item").forEach((item) => {
-                item.classList.remove("selected");
-                item.style.backgroundColor = ""; // Remove fundo de seleção de outros itens
-            });
-            selectedItem.classList.add("selected");
-            selectedItem.style.backgroundColor = "#1E1E1E"; // Fundo da query selecionada
-        })
-        .catch((err) => {
-            console.error("Error loading query:", err);
-        });
-}
-
 // Alternar visibilidade da barra lateral
 const sidebar = document.querySelector(".queries-sidebar");
 const toggleBtn = document.getElementById("toggle-sidebar-btn");
@@ -147,10 +115,10 @@ const toggleBtn = document.getElementById("toggle-sidebar-btn");
 toggleBtn.addEventListener("click", () => {
     if (sidebar.classList.contains("hidden")) {
         sidebar.classList.remove("hidden"); // Expande a barra
-        toggleBtn.textContent = "⮘"; // Ícone para ocultar
+        toggleBtn.textContent = "<"; // Ícone para ocultar
     } else {
         sidebar.classList.add("hidden"); // Minimiza a barra
-        toggleBtn.textContent = "⮚"; // Ícone para exibir
+        toggleBtn.textContent = ">"; // Ícone para exibir
     }
 });
 

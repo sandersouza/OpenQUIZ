@@ -3,7 +3,6 @@ const protocolBtn = document.getElementById("protocol-toggle-btn");
 const methodField = document.getElementById("query-method");
 const urlField = document.getElementById("query-url");
 const bodyField = document.getElementById("query-body");
-const headersField = document.getElementById("query-headers");
 const bearerField = document.getElementById("bearer-token");
 
 // Variáveis para armazenar o estado atual

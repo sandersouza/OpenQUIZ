@@ -12,36 +12,52 @@ def execute_query():
     headers = data.get("headers", {})
     body = data.get("body", "")
     token = data.get("bearer_token", "")
+    protocol = data.get("protocol", "HTTP")  # Obter o protocolo (HTTP ou HTTP/3)
 
     if not url:
         return jsonify({"error": "URL is required"}), 400
 
-    curl_command = [
-        "curl", "-k", "-v", "-X", method, f'"{url}"'
-    ]
+    # Construir o comando CURL
+    curl_command = ["curl"]
 
+    # Adicionar flag --http3 se o protocolo for HTTP/3
+    print("DEBUG: ", protocol.upper())
+    if protocol.upper() == "HTTP/3":
+        curl_command.append("--http3")
+
+    curl_command += ["-k", "-v", "-X", method, f'"{url}"']
+
+    # Adicionar token ao cabeçalho se existir
     if token:
         headers["Authorization"] = f"Bearer {token}"
 
+    # Adicionar cabeçalhos ao comando
     for key, value in headers.items():
         curl_command += ["-H", f'"{key}: {value}"']
 
+    # Adicionar corpo da requisição se houver
     if body:
         body_doublequote = json.dumps(body)
         curl_command += ["-d", f'\'{body_doublequote}\'']
 
+    # Converter o comando para string para depuração
     curl_command_str = " ".join(curl_command)
     print("Generated CURL Command:", curl_command_str)
 
     try:
+        # Executar o comando CURL
         result = subprocess.run(
             curl_command_str, shell=True, capture_output=True, text=True, check=True
         )
         verbose_output = result.stderr.strip()
+
+        # Separar headers da resposta
         response_headers = [
             line[2:].strip() for line in verbose_output.split("\n")
             if line.startswith("<") and ": " in line
         ]
+
+        # Processar corpo da resposta
         output = result.stdout.strip()
         try:
             output_json = json.loads(output)

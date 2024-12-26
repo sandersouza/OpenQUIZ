@@ -15,6 +15,20 @@
     overflow: hidden;
 }
 
+.query-item.selected .queries-label {
+    background-color: #333; /* Cor ao selecionar */
+    border-color: #777;     /* Borda ao selecionar */
+    cursor: pointer;
+}
+
+/* Adicionar estilo consistente para hover e seleção */
+.query-item:hover .queries-label,
+.query-item.selected .queries-label {
+    background-color: #444; /* Cor ao passar o mouse ou selecionar */
+    border-color: #888;     /* Borda mais clara */
+    transition: background-color 0.2s ease, border-color 0.2s ease; /* Transição suave */
+}
+
 #toggle-sidebar-btn {
     background-color: #4caf50;
     color: white;
@@ -50,13 +64,6 @@
     font-size: small;
     margin-bottom: 5px;
     position: relative;
-}
-
-.queries-label:hover,
-.query-item.selected .queries-label {
-    background-color: #333;
-    border-color: #777;
-    cursor: pointer;
 }
 
 .queries-method {

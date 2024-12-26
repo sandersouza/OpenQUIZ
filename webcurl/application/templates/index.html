@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/static/styles/sidebar.css">
     <link rel="stylesheet" href="/static/styles/editor.css">
     <link rel="stylesheet" href="/static/styles/response.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <title>WebCurl</title>
 </head>
 <body>
@@ -16,8 +17,8 @@
             <div class="queries-header">
                 <h2 class="queries-title">Queries</h2>
                 <div class="queries-buttons">
-                    <button id="new-blank-query-btn" title="Create a new blank query">+</button>
-                    <button id="toggle-sidebar-btn" title="Toggle sidebar">⮘</button>
+                    <button id="new-blank-query-btn" title="Create a new blank query"><i class="bi bi-plus-square-fill"></i></button>
+                    <button id="toggle-sidebar-btn" title="Toggle sidebar"><</button>
                 </div>
             </div>
             <ul id="queries-list">
@@ -25,12 +26,6 @@
                 <li class="query-item">
                     <div class="query-row">
                         <span>{{ query.name }}</span>
-                        <button class="menu-button" aria-label="Query menu">...</button>
-                        <div class="menu-options hidden">
-                            <button class="rename-query" data-query-id="{{ query._id }}">Renomear</button>
-                            <button class="duplicate-query" data-query-id="{{ query._id }}">Duplicar</button>
-                            <button class="delete-query" data-query-id="{{ query._id }}">Apagar</button>
-                        </div>
                     </div>
                 </li>
                 {% endfor %}
@@ -47,19 +42,44 @@
                     <option value="POST">POST</option>
                     <option value="PUT">PUT</option>
                     <option value="DELETE">DELETE</option>
+                    <option value="COPY">COPY</option>
+                    <option value="HEAD">HEAD</option>
+                    <option value="OPTIONS">OPTIONS</option>
+                    <option value="LINK">LINK</option>
+                    <option value="UNLINK">UNLINK</option>
+                    <option value="PURGE">PURGE</option>
+                    <option value="LOCK">LOCK</option>
+                    <option value="UNLOCK">UNLOCK</option>
+                    <option value="PROPFIND">PROPFIND</option>
+                    <option value="VIEW">VIEW</option>
                 </select>
                 <input type="text" id="query-url" placeholder="API URL/URI" aria-label="API URL">
             </div>
             
             <!-- Corpo e Headers -->
             <textarea id="query-body" class="request-body-txt" placeholder="Request Body" aria-label="Request Body"></textarea>
-            <textarea id="query-headers" placeholder="Headers (JSON format)" aria-label="Headers"></textarea>
+            
+            <div id="headers-container">
+                <table id="headers-table">
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Value</th>
+                            <th class="action-right-row">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Linhas dinâmicas geradas automaticamente -->
+                    </tbody>
+                </table>
+                <!-- O botão de adicionar foi removido pois o comportamento agora é dinâmico -->
+            </div>
             
             <!-- Token e Execução -->
             <div class="request-action">
                 <input type="text" id="bearer-token" placeholder="Bearer Token" aria-label="Bearer Token">
-                <button id="save-query-btn" aria-label="Save Query">Save</button>
-                <button id="execute-query-btn" aria-label="Execute Query">Execute</button>
+                <button id="save-query-btn" aria-label="Save Query"><i class="bi bi-floppy"></i></button>
+                <button id="execute-query-btn" aria-label="Execute Query"><i class="bi bi-arrow-return-right"></i></button>
             </div>            
             
             <!-- Headers da Resposta -->
@@ -79,25 +99,5 @@
     <script src="/static/scripts/highlight.js"></script>
     <script src="/static/scripts/query_manager.js"></script>
     <script src="/static/scripts/sidebar.js"></script>
-    <script>
-        // Script para gerenciar o menu
-        document.addEventListener("click", (event) => {
-            // Fechar menus abertos
-            document.querySelectorAll(".menu-options.visible").forEach((menu) => {
-                menu.classList.remove("visible");
-                menu.classList.add("hidden");
-            });
-
-            const target = event.target;
-
-            // Verificar se clicou no botão do menu
-            if (target.classList.contains("menu-button")) {
-                const menu = target.nextElementSibling;
-                menu.classList.toggle("hidden");
-                menu.classList.toggle("visible");
-                event.stopPropagation();
-            }
-        });
-    </script>
 </body>
 </html>
