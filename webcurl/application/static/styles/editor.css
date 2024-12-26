@@ -171,5 +171,8 @@ textarea {
 }
 
 .action-right-row {
-    width: 10%;
+    width: 60px;
+}
+.header-property {
+    width: 25%;
 }
