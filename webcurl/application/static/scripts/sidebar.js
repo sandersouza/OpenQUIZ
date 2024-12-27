@@ -6,7 +6,7 @@ function loadAllQueries() {
             const queriesList = document.getElementById("queries-list");
             queriesList.innerHTML = ""; // Limpa a lista antes de preencher
             queries.forEach((query) => {
-                addQueryToSidebar(query.name, query._id, query.method);
+                addQueryToSidebar(query.name, query._id, formatMethod(query.method));
             });
         })
         .catch((err) => {
@@ -21,7 +21,9 @@ function addQueryToSidebar(queryName, queryId, method) {
 
     newItem.innerHTML = `
         <div class="queries-label">
-            <span class="queries-method">[${method}]</span>&nbsp;${queryName}
+            <span class="queries-method ${method.toLowerCase()}">${method}</span>
+            <span class="queries-name">${queryName}</span>
+            <span class="menu-button" id="sidebar-item-menu"><i class="bi bi-three-dots-vertical"></i></span>
         </div>
     `;
     newItem.dataset.queryId = queryId;
@@ -33,6 +35,27 @@ function addQueryToSidebar(queryName, queryId, method) {
     });
 
     queriesList.appendChild(newItem);
+}
+
+// Função para formatar o método para no máximo 4 caracteres
+function formatMethod(method) {
+    const methodMap = {
+        GET: "GET",
+        POST: "POST",
+        PUT: "PUT",
+        DELETE: "DEL",
+        COPY: "COPY",
+        HEAD: "HEAD",
+        OPTIONS: "OPT",
+        LINK: "LINK",
+        UNLINK: "UNLK",
+        PURGE: "PURG",
+        LOCK: "LOCK",
+        UNLOCK: "UNLK",
+        PROPFIND: "PFND",
+        VIEW: "VIEW",
+    };
+    return methodMap[method.toUpperCase()] || method.toUpperCase();
 }
 
 // Função para exibir mensagem de feedback
@@ -91,47 +114,59 @@ function loadQuery(queryId, selectedItem) {
         });
 }
 
-// Função para recarregar o sidebar
-function reloadSidebar() {
-    const queriesList = document.getElementById("queries-list");
-    queriesList.innerHTML = ""; // Limpa a lista atual
+// Função para mostrar o modal de entrada de query
+function showQueryModal() {
+    const modal = document.getElementById("query-modal");
+    const inputField = document.getElementById("query-name-input");
+    const submitBtn = document.getElementById("submit-query-btn");
+    const cancelBtn = document.getElementById("cancel-query-btn");
 
-    fetch("/queries")
-        .then((res) => res.json())
-        .then((queries) => {
-            queries.forEach((query) => {
-                addQueryToSidebar(query.name, query._id, query.method);
-            });
-        })
-        .catch((err) => {
-            console.error("Error reloading sidebar:", err);
-        });
+    modal.classList.remove("hidden");
+    inputField.focus();
+
+    // Limitar entrada no campo de texto
+    inputField.addEventListener("input", () => {
+        if (inputField.value.length > 23) {
+            inputField.value = inputField.value.slice(0, 23);
+        }
+    });
+
+    // Evento para criar query
+    submitBtn.addEventListener("click", () => {
+        const queryName = inputField.value.trim();
+        if (queryName.length < 3) {
+            showFeedbackMessage("Query name must be at least 3 characters!");
+            return;
+        }
+
+        createQuery(queryName);
+        closeModal();
+    });
+
+    // Evento para cancelar modal
+    cancelBtn.addEventListener("click", closeModal);
+
+    // Evento para fechar modal com tecla ESC
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            closeModal();
+        }
+    });
 }
 
-// Alternar visibilidade da barra lateral
-const sidebar = document.querySelector(".queries-sidebar");
-const toggleContainer = document.querySelector(".toggle-lingueta");
+// Função para fechar o modal
+function closeModal() {
+    const modal = document.getElementById("query-modal");
+    const inputField = document.getElementById("query-name-input");
+    modal.classList.add("hidden");
+    inputField.value = ""; // Limpa o campo de entrada
+    document.removeEventListener("keydown", closeModal); // Remove o evento ESC
+}
 
-document.getElementById("toggle-sidebar-btn").addEventListener("click", () => {
-    if (sidebar.classList.contains("hidden")) {
-        sidebar.classList.remove("hidden"); // Expande a barra
-        toggleContainer.style.transform = "translateX(0)";
-    } else {
-        sidebar.classList.add("hidden"); // Minimiza a barra
-        toggleContainer.style.transform = "rotateY(180deg)";
-    }
-});
-
-// Evento para criar uma nova query em branco com nome personalizado
-document.getElementById("new-blank-query-btn").addEventListener("click", () => {
-    const queryName = prompt("Enter a name for the new query:");
-    if (!queryName || queryName.trim() === "") {
-        showFeedbackMessage("Query name is required!");
-        return;
-    }
-
+// Função para criar uma query
+function createQuery(queryName) {
     const queryData = {
-        name: queryName.trim(),
+        name: queryName,
         protocol: "HTTP",
         method: "GET",
         url: "",
@@ -158,7 +193,24 @@ document.getElementById("new-blank-query-btn").addEventListener("click", () => {
             console.error("Error creating new query:", err);
             showFeedbackMessage("An error occurred while creating the query.");
         });
+}
+
+// Alternar visibilidade da barra lateral
+const sidebar = document.querySelector(".queries-sidebar");
+const toggleContainer = document.querySelector(".toggle-lingueta");
+
+document.getElementById("toggle-sidebar-btn").addEventListener("click", () => {
+    if (sidebar.classList.contains("hidden")) {
+        sidebar.classList.remove("hidden"); // Expande a barra
+        toggleContainer.style.transform = "translateX(0)";
+    } else {
+        sidebar.classList.add("hidden"); // Minimiza a barra
+        toggleContainer.style.transform = "rotateY(180deg)";
+    }
 });
+
+// Evento para abrir modal
+document.getElementById("new-blank-query-btn").addEventListener("click", showQueryModal);
 
 // Carregar queries ao iniciar a página
 loadAllQueries();

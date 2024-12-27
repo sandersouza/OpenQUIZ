@@ -24,23 +24,6 @@ document.addEventListener("DOMContentLoaded", () => {
     setHeadersToTable({}); // Adiciona uma linha em branco na tabela ao carregar a página
 });
 
-// Função para recarregar o sidebar
-function reloadSidebar() {
-    const queriesList = document.getElementById("queries-list");
-    queriesList.innerHTML = ""; // Limpa a lista atual
-
-    fetch("/queries")
-        .then((res) => res.json())
-        .then((queries) => {
-            queries.forEach((query) => {
-                addQueryToSidebar(query.name, query._id, query.method);
-            });
-        })
-        .catch((err) => {
-            console.error("Error reloading sidebar:", err);
-        });
-}
-
 // Função para adicionar uma nova linha de header à tabela
 function addHeaderRow(property = "", value = "") {
     const tableBody = document.querySelector("#headers-table tbody");
@@ -159,7 +142,7 @@ function saveQuery() {
                     showFeedbackMessage(`Error: ${data.error}`);
                 } else {
                     showFeedbackMessage("Query updated successfully!");
-                    reloadSidebar();
+                    loadAllQueries();
                 }
             })
             .catch((err) => console.error("Error updating query:", err));
@@ -182,7 +165,7 @@ function saveQuery() {
                     showFeedbackMessage(`Error: ${data.error}`);
                 } else {
                     showFeedbackMessage("Query created successfully!");
-                    reloadSidebar();
+                    loadAllQueries();
                     currentQueryId = data.id;
                     currentQueryName = queryName;
                     resetAndFocusEditor(); // Resetar e focar no campo após criar

@@ -95,6 +95,15 @@
     <!-- Mensagem de feedback -->
     <div id="feedback-message" class="feedback-message hidden"></div>
 
+    <!-- Modal de entrada para query -->
+    <div id="query-modal" class="modal hidden">
+        <div class="modal-content">
+            <input type="text" class="modal-content inputbox" id="query-name-input" placeholder="Enter query name" aria-label="Query name" maxlenggt="20">
+            <button class="modal-content button" id="submit-query-btn" title="Save query"><i class="bi bi-floppy"></i></button>
+            <button class="modal-content esc" id="cancel-query-btn" title="Cancel"><i class="bi bi-escape"></i></button>
+        </div>
+    </div>
+
     <!-- Scripts divididos -->
     <script src="/static/scripts/base.js"></script>
     <script src="/static/scripts/protocol.js"></script>

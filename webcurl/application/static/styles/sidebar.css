@@ -15,6 +15,107 @@
     width: 50px; /* Reduz a largura */
 }
 
+.queries-label {
+    background-color: #1E1E1E;
+    border: 1px solid #555;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: small;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.queries-method {
+    font-size: smaller; /* Menor que o título */
+    font-weight: bold;
+    font-family: monospace;
+    text-transform: uppercase;
+    text-align: center;
+    border-radius: 3px;
+    margin-right: 8px;
+    display: inline-block;
+    width: 30px;
+}
+
+/* Cores específicas para os métodos */
+.queries-method.get {
+    background-color: #4caf50; /* Verde */
+    color: white;
+}
+
+.queries-method.post {
+    background-color: #ffc107; /* Amarela */
+    color: black;
+}
+
+.queries-method.put {
+    background-color: #2196f3; /* Azul */
+    color: white;
+}
+
+.queries-method.del {
+    background-color: #f44336; /* Vermelho */
+    color: white;
+}
+
+/* Cores para os outros métodos */
+.queries-method.opt {
+    background-color: #9c27b0; /* Roxo */
+    color: white;
+}
+
+.queries-method.head {
+    background-color: #795548; /* Marrom */
+    color: white;
+}
+
+.queries-method.copy {
+    background-color: #ff9800; /* Laranja */
+    color: black;
+}
+
+.queries-method.link {
+    background-color: #3f51b5; /* Azul Escuro */
+    color: white;
+}
+
+.queries-method.unlk {
+    background-color: #673ab7; /* Roxo Escuro */
+    color: white;
+}
+
+.queries-method.purg {
+    background-color: #e91e63; /* Rosa */
+    color: white;
+}
+
+.queries-method.lock {
+    background-color: #607d8b; /* Azul Cinza */
+    color: white;
+}
+
+.queries-method.pfnd {
+    background-color: #009688; /* Verde Água */
+    color: white;
+}
+
+.queries-method.view {
+    background-color: #8bc34a; /* Verde Claro */
+    color: white;
+}
+
+.queries-name {
+    flex-grow: 1;
+    text-align: left;
+}
+
+.queries-sidebar.hidden {
+    transform: translateX(-240px); /* Move a sidebar para fora */
+    width: 50px; /* Reduz a largura */
+}
+
 .toggle-container {
     position: fixed;
     top: 9px;
@@ -68,22 +169,6 @@
     color: #ffffff;
 }
 
-.queries-label {
-    background-color: #1E1E1E;
-    border: 1px solid #555;
-    border-radius: 5px;
-    padding: 10px;
-    font-size: small;
-    margin-bottom: 5px;
-    position: relative;
-}
-
-.queries-method {
-    font-size: small;
-    font-family: Consolas, "Courier New", monospace;
-    color: #555;
-}
-
 .queries-buttons {
     display: flex;
     gap: 10px;
@@ -132,6 +217,10 @@ ul#queries-list {
     position: relative;
 }
 
+.menu-button:hover {
+    color: #1e1e1e;
+}
+
 /* Menu de opções */
 .menu-options {
     position: absolute;
@@ -165,4 +254,79 @@ ul#queries-list {
 
 .menu-options button:hover {
     background-color: #333;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: #2e2e2e;
+    padding: 40px;
+    border-radius: 10px;
+    border: 1px solid #555;
+    color: white;
+    width: 300px;
+    text-align: center;
+}
+
+.modal-content.inputbox {
+    height: 40px;
+    background-color: #3e3e3e;
+    color: white;
+    border: 1px solid #555;
+    border-radius: 5px;
+    padding: 0 10px;
+    margin-right: 5px;
+    width: 55%;
+    text-align: left;
+}
+
+.modal-content.button {
+    height: 40px; /* Altura consistente com outros campos */
+    background-color: #4caf50; /* Cor de fundo verde */
+    color: white; /* Texto em branco */
+    border: none; /* Sem bordas */
+    padding: 5px 15px; /* Espaçamento interno */
+    border-radius: 5px; /* Bordas arredondadas */
+    cursor: pointer; /* Cursor de clique */
+    font-weight: bold; /* Texto em negrito */
+    transition: background-color 0.3s ease; /* Transição suave para hover */
+    width: 40px;
+    margin-right: 5px;
+}
+
+.modal-content.button:hover {
+    background-color: #3e8e41; /* Cor mais escura ao passar o mouse */
+}
+
+.modal-content.esc {
+    height: 40px; /* Altura consistente com outros campos */
+    background-color: #f44336; /* Cor de fundo verde */
+    color: white; /* Texto em branco */
+    border: none; /* Sem bordas */
+    padding: 5px 15px; /* Espaçamento interno */
+    border-radius: 5px; /* Bordas arredondadas */
+    cursor: pointer; /* Cursor de clique */
+    font-weight: bold; /* Texto em negrito */
+    transition: background-color 0.3s ease; /* Transição suave para hover */
+    width: 40px;
+    margin-right: 5px;
+}
+
+.modal-content.esc:hover {
+    background-color: #d32f2f;
 }
