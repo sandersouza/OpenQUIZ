@@ -7,10 +7,11 @@
     box-sizing: border-box;
     min-width: 400px;
     transition: margin-left 0.3s ease; /* Suaviza o ajuste ao ocultar a sidebar */
+    margin-left: 15px;
 }
 
 .queries-sidebar.hidden + .query-editor {
-    margin-left: -200px; /* Ajusta a posição do editor quando a sidebar está oculta */
+    margin-left: -225px; /* Ajusta a posição do editor quando a sidebar está oculta */
 }
 
 .request-config, .request-action {

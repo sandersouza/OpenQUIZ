@@ -110,15 +110,15 @@ function reloadSidebar() {
 
 // Alternar visibilidade da barra lateral
 const sidebar = document.querySelector(".queries-sidebar");
-const toggleBtn = document.getElementById("toggle-sidebar-btn");
+const toggleContainer = document.querySelector(".toggle-lingueta");
 
-toggleBtn.addEventListener("click", () => {
+document.getElementById("toggle-sidebar-btn").addEventListener("click", () => {
     if (sidebar.classList.contains("hidden")) {
         sidebar.classList.remove("hidden"); // Expande a barra
-        toggleBtn.textContent = "<"; // Ícone para ocultar
+        toggleContainer.style.transform = "translateX(0)";
     } else {
         sidebar.classList.add("hidden"); // Minimiza a barra
-        toggleBtn.textContent = ">"; // Ícone para exibir
+        toggleContainer.style.transform = "rotateY(180deg)";
     }
 });
 

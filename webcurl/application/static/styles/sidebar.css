@@ -1,24 +1,50 @@
 /* Sidebar */
 .queries-sidebar {
     background-color: #2e2e2e;
-    padding: 10px;
+    padding: 17px 10px 0px 10px;
     box-sizing: border-box;
     min-width: 250px;
     width: 250px;
     flex-shrink: 0;
+    position: relative; /* Necessário para posicionar a lingueta */
     transition: transform 0.3s ease, width 0.3s ease;
 }
 
 .queries-sidebar.hidden {
-    transform: translateX(-200px); /* Move a sidebar para fora */
+    transform: translateX(-240px); /* Move a sidebar para fora */
     width: 50px; /* Reduz a largura */
-    overflow: hidden;
 }
 
-.query-item.selected .queries-label {
-    background-color: #333; /* Cor ao selecionar */
-    border-color: #777;     /* Borda ao selecionar */
+.toggle-container {
+    position: fixed;
+    top: 9px;
+    left: 245px;
+    z-index: 1000;
+    padding: 10px 0px 10px 0px;
+    border-radius: 0px 5px 5px 0px;
+    background-color: #2e2e2e;
+    pointer-events: all;
+    transition: transform 0.3s ease;
+}
+
+.queries-sidebar.hidden + .toggle-container {
+    transform: translateX(-240px); /* Move a lingueta junto com a barra oculta */
+}
+
+.toggle-lingueta {
+    position: relative;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px 0 0 5px; /* Bordas arredondadas */
+    padding: 8px 10px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
+    z-index: 9999; /* Garante que fique acima de outros elementos */
+}
+
+.toggle-lingueta:hover {
+    background-color: #3e8e41;
 }
 
 /* Adicionar estilo consistente para hover e seleção */
@@ -27,20 +53,6 @@
     background-color: #444; /* Cor ao passar o mouse ou selecionar */
     border-color: #888;     /* Borda mais clara */
     transition: background-color 0.2s ease, border-color 0.2s ease; /* Transição suave */
-}
-
-#toggle-sidebar-btn {
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-#toggle-sidebar-btn:hover {
-    background-color: #3e8e41;
 }
 
 .queries-header {
@@ -77,17 +89,17 @@
     gap: 10px;
 }
 
-#toggle-sidebar-btn, #new-query-btn {
-    background-color: #4caf50;
+#toggle-sidebar-btn {
+    background-color: #2e2e2e;
     color: white;
     border: none;
-    padding: 5px 10px;
+    padding: 5px 5px;
     border-radius: 5px;
     cursor: pointer;
 }
 
-#toggle-sidebar-btn:hover, #new-query-btn:hover {
-    background-color: #3e8e41;
+#toggle-sidebar-btn:hover {
+    background-color: #1e1e1e;
 }
 
 ul#queries-list {
