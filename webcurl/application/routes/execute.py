@@ -1,5 +1,6 @@
 import subprocess
 import json
+import time
 from flask import Blueprint, request, jsonify
 
 execute_bp = Blueprint("execute", __name__, url_prefix="/execute")
@@ -21,9 +22,8 @@ def execute_query():
     curl_command = ["curl"]
 
     # Adicionar flag --http3 se o protocolo for HTTP/3
-    print("DEBUG: ", protocol.upper())
     if protocol.upper() == "HTTP/3":
-        curl_command += ["--http3","-k", "-v", "-X", method, f'"{url}"']
+        curl_command += ["--http3", "-k", "-v", "-X", method, f'"{url}"']
     else:
         curl_command += ["-k", "-v", "-X", method, f'"{url}"']
 
@@ -45,10 +45,14 @@ def execute_query():
     print("Generated CURL Command:", curl_command_str)
 
     try:
-        # Executar o comando CURL
+        # Medir o tempo de execução
+        start_time = time.time()
         result = subprocess.run(
             curl_command_str, shell=True, capture_output=True, text=True, check=True
         )
+        end_time = time.time()
+        response_time = (end_time - start_time) * 1000  # Tempo em milissegundos
+
         verbose_output = result.stderr.strip()
 
         # Separar headers da resposta
@@ -56,6 +60,11 @@ def execute_query():
             line[2:].strip() for line in verbose_output.split("\n")
             if line.startswith("<") and ": " in line
         ]
+
+        # Adicionar o tempo de resposta ao cabeçalho HTTP/3 ou HTTP
+        status_line = next((line[2:].strip() for line in verbose_output.split("\n") if line.startswith("< HTTP/")), "")
+        if status_line:
+            status_line += f" (Response time {response_time:.2f}ms)"
 
         # Processar corpo da resposta
         output = result.stdout.strip()
@@ -68,7 +77,7 @@ def execute_query():
             "status": "success",
             "curl_command": curl_command_str,
             "output": output_json,
-            "headers": response_headers
+            "headers": [status_line] + response_headers
         })
 
     except subprocess.CalledProcessError as e:

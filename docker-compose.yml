@@ -51,11 +51,16 @@ services:
     depends_on:
       - api
 
-  # CURL with HTTP3/QUIC support for teste purposes.
-  openquiz_curl_quic:
-    image: ymuski/curl-http3:latest
-    container_name: openquiz_curl_quic
-    entrypoint: /bin/sh -c "while true; do sleep 3600; done"
+  webcurl:
+    build:
+      context: ./webcurl
+    container_name: openquiz_webcurl
+    ports:
+      - "8001:8082"
+    # network_mode: host
+    volumes:
+      - ./webcurl/application/:/app/:ro
+    command: python3 main.py
     
 volumes:
   mongo_data:

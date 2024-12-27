@@ -1,0 +1,21 @@
+{
+    "name": "WebCURL with QUIC Support",
+    "short_name": "WebCURL",
+    "description": "A modern and customizable API test client with QUIC/HTTP3 support.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#1e1e1e",
+    "theme_color": "#4caf50",
+    "icons": [
+        {
+            "src": "/static/icon-192x192.png",
+            "type": "image/png",
+            "sizes": "192x192"
+        },
+        {
+            "src": "/static/icon-512x512.png",
+            "type": "image/png",
+            "sizes": "512x512"
+        }
+    ]
+}
