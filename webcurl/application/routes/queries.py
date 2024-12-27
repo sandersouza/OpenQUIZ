@@ -1,8 +1,6 @@
 from flask import Blueprint, request, jsonify
 from bson.objectid import ObjectId
 from database import db  # Conexão com o MongoDB
-import subprocess
-import json
 
 # Configuração da collection no MongoDB
 queries_collection = db.queries
@@ -17,9 +15,14 @@ def save_query():
         data = request.get_json()
         if not data:
             return jsonify({"error": "Invalid JSON body"}), 400
-        if not data.get("name"):
+        if not isinstance(data, dict):
+            return jsonify({"error": "Payload must be a JSON object"}), 400
+
+        # Verificar se o campo 'name' está presente
+        if "name" not in data or not data["name"].strip():
             return jsonify({"error": "Query name is required"}), 400
 
+        # Salvar ou atualizar a query
         query_id = data.get("_id")
         if query_id:
             updated_query = {
@@ -53,45 +56,52 @@ def save_query():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# Rota para buscar ou atualizar uma query existente
-@queries_bp.route("/<query_id>", methods=["GET", "PUT"])
+# Rota para buscar, atualizar ou deletar uma query existente
+@queries_bp.route("/<query_id>", methods=["GET", "PUT", "DELETE"])
 def handle_query(query_id):
     try:
-        # Buscar query pelo ID
         if request.method == "GET":
             query = queries_collection.find_one({"_id": ObjectId(query_id)})
             if not query:
                 return jsonify({"error": "Query not found"}), 404
-
             query["_id"] = str(query["_id"])  # Converter ObjectId para string
             return jsonify(query), 200
 
-        # Atualizar query existente
         elif request.method == "PUT":
-            data = request.json
-            updated_query = {
-                "protocol": data.get("protocol"),
-                "method": data.get("method"),
-                "url": data.get("url"),
-                "headers": data.get("headers"),
-                "body": data.get("body"),
-                "bearer_token": data.get("bearer_token")
-            }
+            try:
+                data = request.get_json()
+                print("Received Payload:", data)  # Log para depuração
 
-            queries_collection.update_one({"_id": ObjectId(query_id)}, {"$set": updated_query})
-            return jsonify({"message": "Query updated successfully"}), 200
+                if not data or "name" not in data or not data["name"].strip():
+                    return jsonify({"error": "Invalid payload or missing 'name'"}), 400
+
+                # Atualizar apenas os campos enviados no payload
+                result = queries_collection.update_one(
+                    {"_id": ObjectId(query_id)},
+                    {"$set": data}
+                )
+
+                if result.matched_count == 0:
+                    return jsonify({"error": "Query not found"}), 404
+
+                return jsonify({"message": "Query updated successfully"}), 200
+            except Exception as e:
+                return jsonify({"error": str(e)}), 500
+
+        elif request.method == "DELETE":
+            result = queries_collection.delete_one({"_id": ObjectId(query_id)})
+            if result.deleted_count == 0:
+                return jsonify({"error": "Query not found"}), 404
+            return jsonify({"message": "Query deleted successfully"}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# Rota para listar todas as queries
 @queries_bp.route("/", methods=["GET"])
 def list_queries():
-    """
-    Retorna todas as queries existentes no MongoDB.
-    """
     try:
         queries = list(queries_collection.find())
-        # Converter ObjectId para string
         for query in queries:
             query["_id"] = str(query["_id"])
         return jsonify(queries), 200

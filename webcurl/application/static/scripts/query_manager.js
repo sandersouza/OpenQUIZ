@@ -94,19 +94,23 @@ function saveQuery() {
     } catch (e) {
         return;
     }
+
     const queryData = {
+        name: currentQueryName || "New Query", // Nome padrão se não for definido
         protocol: protocolBtn.textContent.trim(),
-        method: methodField.value,
-        url: urlField.value,
+        method: methodField.value || "GET", // Valor padrão "GET"
+        url: urlField.value || "", // URL vazia padrão
         headers: getHeadersFromTable(),
-        body: parsedBody,
-        bearer_token: bearerField.value
+        body: parsedBody || {}, // Corpo padrão vazio
+        bearer_token: bearerField.value || "" // Token padrão vazio
     };
+
+    // Atualizar uma query existente
     if (currentQueryId) {
         fetch(`/queries/${currentQueryId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(queryData)
+            body: JSON.stringify(queryData) // Enviar todos os campos atualizados
         })
             .then((res) => res.json())
             .then((data) => {
@@ -119,6 +123,7 @@ function saveQuery() {
             })
             .catch((err) => console.error("Error updating query:", err));
     } else {
+        // Criar uma nova query
         const queryName = prompt("Enter a name for the new query:");
         if (!queryName || queryName.trim() === "") {
             showFeedbackMessage("Query name is required!");
