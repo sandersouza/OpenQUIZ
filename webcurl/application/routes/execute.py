@@ -7,12 +7,12 @@ execute_bp = Blueprint("execute", __name__, url_prefix="/execute")
 @execute_bp.route("/", methods=["POST"])
 def execute_query():
     data = request.json
+    protocol = data.get("protocol", "HTTP")
     url = data.get("url")
     method = data.get("method", "GET").upper()
     headers = data.get("headers", {})
     body = data.get("body", "")
     token = data.get("bearer_token", "")
-    protocol = data.get("protocol", "HTTP")  # Obter o protocolo (HTTP ou HTTP/3)
 
     if not url:
         return jsonify({"error": "URL is required"}), 400
@@ -23,9 +23,9 @@ def execute_query():
     # Adicionar flag --http3 se o protocolo for HTTP/3
     print("DEBUG: ", protocol.upper())
     if protocol.upper() == "HTTP/3":
-        curl_command.append("--http3")
-
-    curl_command += ["-k", "-v", "-X", method, f'"{url}"']
+        curl_command += ["--http3","-k", "-v", "-X", method, f'"{url}"']
+    else:
+        curl_command += ["-k", "-v", "-X", method, f'"{url}"']
 
     # Adicionar token ao cabeçalho se existir
     if token:
