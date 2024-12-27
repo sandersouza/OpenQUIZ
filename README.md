@@ -13,8 +13,9 @@ In time...I change from old loved Flask RestAPI, to FastAPI + Hypercorn framewor
 - [ ] 🧪 Maybe... RabbitMQ ( Queue )
 
 ## 🪒 In development
-- Frontend for Admin
-- Frontend for Logged Players
+- [x] API Test tool with QUIC Support ( See WebCURL )
+- [ ] Frontend for Admin
+- [ ] Frontend for Logged Players
   - Player Profile
     - Preferred Themes
     - About Me
@@ -24,18 +25,15 @@ In time...I change from old loved Flask RestAPI, to FastAPI + Hypercorn framewor
     - Random QUIZZES
   - Scoreboard for played QUIZZES
   - Random Create Trivias
-- Frontend for Ephemeral Players
-- OAUTH / SSO Login with Google
+- [ ] Frontend for Ephemeral Players
+- [ ] OAUTH / SSO Login with Google
 
 ## 🛠️ Setup Instructions
 >[!IMPORTANT]
-> You need to select MongoDB version in .env ( instructions inside than )... MongoDB 5.0 needs a CPU with AVX support, and with some old processors like XEON X5680 ( my fully functional old macpro 5,1 for example ), cannot be run it. Then I made 2 versions of compose.
+> You need to select MongoDB version in .env ( instructions inside than )... MongoDB 5.0 needs a CPU with AVX support, and with some old processors like XEON X5680 ( my fully functional old macpro 5,1 for example ), cannot be run it. Then I made 2 versions of compose. Build the stack and be happy 🎉
 
 ```bash
-### This example use MongoDB 5.5.
-### Build the stack and be happy 🎉
-
-$ docker compose -f docker-compose-mongo4.4.yml -up -d --build
+$ docker compose -up -d --build
 ```
 
 ## 🧪 How can I test?
@@ -43,10 +41,17 @@ $ docker compose -f docker-compose-mongo4.4.yml -up -d --build
 >At this time no one update yours API Test tools ( like postman or insomnia ), to support HTTP/3 or QUIC. Then... use everything UI you want, I preffer Postman, and put into root of this repo, a Postman Collection with all you need. "And All You need is ❤️ " - Lennon. John 🪲
 
 >[!TIP]
->But... if you wanna make great tests in shell, use CURL with --http3 support! read more around the internet, how can you install it for your OS.
+>But... Don't worry! See WebCURL at http://localhost:8001.
 
 >[!IMPORTANT]
 >Above, endpoint, routes and payloads to test OpenQUIZ API Rest.
+
+## ➰ About WebCURL with QUIC support
+WebCURL container into stack, is my own API Test tool, create with Python, HTML, CSS and Javascript, at this time is 100% functional. You can change docker-compose.yml ( instruction inside ), to use it for any purpose with any kind of API's ( but without QUIC/HTTP3 ) or inside OpenQUIZ stack with full QUIC/HTTP3 support, but you need to use URL https://api:4433/quizzes/. Is fast! really fast... and you can install it with Google Chrome, and use offline like an application ( PWA Model ); Browser access at http://localhost:8001, soon as possible I fork it into a full project.
+
+Look this simple and beatiful screen above! ❤️
+![Descrição da Imagem](webcurl.png)
+
 
 ## 📃  API Documentation ( SwaggerUI, Redoc and Schemas )
 To see SwaggerUI, Redoc or JSON Schemas... open any browser and access this addresses:
@@ -89,7 +94,7 @@ Method  : { GET }
 Endpoint: https://{server}/quizzes/
 ```
 
-## ✂️ Edit a Quiz
+## ✂️ Update a Quiz
 ```txt
 Method  : { PUT }
 Endpoint: https://{server}/quizzes/{id}
