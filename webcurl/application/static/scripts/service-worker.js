@@ -1,28 +1,42 @@
 const CACHE_NAME = "webcurl-cache-v1";
 const urlsToCache = [
-    "/",
+    "/", // Página principal
+    "/template/index.html",
+    "/static/styles/base.css",
     "/static/styles/sidebar.css",
+    "/static/styles/editor.css",
+    "/static/scripts/base.js",
     "/static/scripts/sidebar.js",
-    "/static/icons/icon-192x192.png",
-    "/static/icons/icon-512x512.png"
+    "/static/scripts/query_manager.js",
+    "/static/scripts/protocol.js",
+    "/static/icons/favicon.ico"
 ];
 
+// Instalar o Service Worker e adicionar ao cache
 self.addEventListener("install", (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll(urlsToCache);
+            return Promise.all(
+                urlsToCache.map((url) =>
+                    fetch(url)
+                        .then((response) => {
+                            if (!response.ok) {
+                                console.warn(`Skipping caching of ${url}: ${response.statusText}`);
+                                return null;
+                            }
+                            return cache.put(url, response);
+                        })
+                        .catch((err) => {
+                            console.error(`Error fetching ${url}:`, err);
+                            return null;
+                        })
+                )
+            );
         })
     );
 });
 
-self.addEventListener("fetch", (event) => {
-    event.respondWith(
-        caches.match(event.request).then((response) => {
-            return response || fetch(event.request);
-        })
-    );
-});
-
+// Ativar o Service Worker e remover caches antigos
 self.addEventListener("activate", (event) => {
     const cacheWhitelist = [CACHE_NAME];
     event.waitUntil(
@@ -34,6 +48,15 @@ self.addEventListener("activate", (event) => {
                     }
                 })
             );
+        })
+    );
+});
+
+// Interceptar requisições e retornar do cache
+self.addEventListener("fetch", (event) => {
+    event.respondWith(
+        caches.match(event.request).then((response) => {
+            return response || fetch(event.request);
         })
     );
 });
