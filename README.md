@@ -58,7 +58,6 @@ To see SwaggerUI, Redoc or JSON Schemas... open any browser and access this addr
 ```html
 Swagger - https://{server}:4433/docs
 Redoc   - https://{server}:4433/redoc
-Schema  - https://{server}:4433/schema
 ```
 ## 🎲 Create a Quiz
 ```
