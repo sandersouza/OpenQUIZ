@@ -5,6 +5,10 @@ const urlField = document.getElementById("query-url");
 const bodyField = document.getElementById("query-body");
 const bearerField = document.getElementById("bearer-token");
 
+// Sidebar constants
+const sidebar = document.querySelector(".queries-sidebar");
+const toggleContainer = document.querySelector(".toggle-lingueta");
+
 // Variáveis para armazenar o estado atual
 let currentQueryId = null;
 let currentQueryName = null;
