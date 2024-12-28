@@ -96,21 +96,20 @@ function saveQuery() {
     }
 
     const queryData = {
-        name: currentQueryName || "New Query", // Nome padrão se não for definido
+        name: currentQueryName || "New Query",
         protocol: protocolBtn.textContent.trim(),
-        method: methodField.value || "GET", // Valor padrão "GET"
-        url: urlField.value || "", // URL vazia padrão
+        method: methodField.value || "GET",
+        url: urlField.value || "",
         headers: getHeadersFromTable(),
-        body: parsedBody || {}, // Corpo padrão vazio
-        bearer_token: bearerField.value || "" // Token padrão vazio
+        body: parsedBody || "",
+        bearer_token: bearerField.value || ""
     };
 
-    // Atualizar uma query existente
     if (currentQueryId) {
         fetch(`/queries/${currentQueryId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(queryData) // Enviar todos os campos atualizados
+            body: JSON.stringify(queryData)
         })
             .then((res) => res.json())
             .then((data) => {
@@ -123,7 +122,6 @@ function saveQuery() {
             })
             .catch((err) => console.error("Error updating query:", err));
     } else {
-        // Criar uma nova query
         const queryName = prompt("Enter a name for the new query:");
         if (!queryName || queryName.trim() === "") {
             showFeedbackMessage("Query name is required!");
@@ -162,14 +160,21 @@ function loadQuery(queryId, selectedItem) {
                 showFeedbackMessage(`Error loading query: ${data.error}`);
                 return;
             }
+
+            // Ajuste para evitar "{}" no corpo vazio
+            bodyField.value = data.body && Object.keys(data.body).length > 0 
+                ? JSON.stringify(data.body, null, 2) 
+                : "";
+
             urlField.value = data.url || "";
             methodField.value = data.method || "GET";
-            bodyField.value = JSON.stringify(data.body || {}, null, 2);
             setHeadersToTable(data.headers || {});
             bearerField.value = data.bearer_token || "";
             protocolBtn.textContent = data.protocol || "HTTP";
+
             currentQueryId = data._id;
             currentQueryName = data.name;
+
             document.querySelectorAll(".query-item").forEach((item) => {
                 item.classList.remove("selected");
             });
