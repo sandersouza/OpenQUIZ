@@ -42,7 +42,6 @@ def execute_query():
 
     # Converter o comando para string para depuração
     curl_command_str = " ".join(curl_command)
-    print("Generated CURL Command:", curl_command_str)
 
     try:
         # Medir o tempo de execução

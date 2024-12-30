@@ -70,8 +70,6 @@ def handle_query(query_id):
         elif request.method == "PUT":
             try:
                 data = request.get_json()
-                print("Received Payload:", data)  # Log para depuração
-
                 if not data or "name" not in data or not data["name"].strip():
                     return jsonify({"error": "Invalid payload or missing 'name'"}), 400
 
