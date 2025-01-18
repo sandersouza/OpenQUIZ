@@ -29,12 +29,17 @@ In time...I change from old loved Flask RestAPI, to FastAPI + Hypercorn framewor
 - [ ] OAUTH / SSO Login with Google
 
 ## 🛠️ Setup Instructions
->[!IMPORTANT]
-> You need to select MongoDB version in .env ( instructions inside than )... MongoDB 5.0 needs a CPU with AVX support, and with some old processors like XEON X5680 ( my fully functional old macpro 5,1 for example ), cannot be run it. Then I made 2 versions of compose. Build the stack and be happy 🎉
+You need to select MongoDB version in .env ( instructions inside than )... MongoDB 5.0 needs a CPU with AVX support, and with some old processors like XEON X5680 ( my fully functional old macpro 5,1 for example ), cannot be run it. Then I made 2 versions of compose. Build the stack and be happy 🎉
+
+**Docker** can be changed by any orchestrator with compose support like docker, podman and rancher desktop. Choose your, and change it in the command. My recommendation is PODMAN, fast, security, don't need root/admin to run, and other little good features, see it here [PODMAN](https://podman.io/).
 
 ```bash
 $ docker compose -up -d --build
 ```
+
+>[!IMPORTANT]
+> Rename **.env-example** and **docker-compose.yml-example** removing '**-example**' and adjust your parameters according your system, like passwords, authkeys, Bearrier Token, version of Mongo DB, sensible data and others; into helpers, the script gentoken.sh is an automatic bearier token generator, use ir from root diretory with command **helpers/gentoken.sh**.
+
 
 ## 🧪 How can I test?
 >[!NOTE]
@@ -54,17 +59,29 @@ Look this simple and beatiful screen above! ❤️
 
 
 ## 📃  API Documentation ( SwaggerUI, Redoc and Schemas )
-To see SwaggerUI, Redoc or JSON Schemas... open any browser and access this addresses:
+All requisition use the same request Header, and the same bearrier token ( see into .env if you generate it ). To see SwaggerUI, Redoc or JSON Schemas... open any browser and access this addresses:
 ```html
 Swagger - https://{server}:4433/docs
 Redoc   - https://{server}:4433/redoc
 ```
+
+**Request Headers**
+```JSOn
+[
+    {"Content-Type": "application/json"},
+    {"Accept-Encoding":"gzip, deflate, br"},
+    {"Connection": keep-alive"}
+]
+```
+
 ## 🎲 Create a Quiz
+**Method and endpoint**
 ```
 Method  : { POST }
 Endpoint: https://{server}/quizzes/
-Request Body ↓↓↓
 ```
+
+**Request body**
 ```json
 {
     "name": "Quiz Example",
@@ -88,17 +105,19 @@ Request Body ↓↓↓
 ```
 
 ## 🔎 List Quizzes
+**Method and endpoint**
 ```txt
 Method  : { GET }
 Endpoint: https://{server}/quizzes/
 ```
 
 ## ✂️ Update a Quiz
+**Method and endpoint**
 ```txt
 Method  : { PUT }
 Endpoint: https://{server}/quizzes/{id}
-Request Body↓↓↓
 ```
+**Request Body**
 ```json
 {
     "name": "Quiz Example",
@@ -122,6 +141,7 @@ Request Body↓↓↓
   ```
 
 ## 🧨 Delete a Quiz
+**Method and endpoint**
 ```txt
 Method  : { DEL }
 Endpoint: https://{server}/quizzes/{id}

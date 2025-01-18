@@ -2,15 +2,13 @@ from fastapi import FastAPI, HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from app.routers import quizzes
 from app.database import connect_to_mongo
-import yaml
+import os
 
-# Carregar token do arquivo config.yml
-def load_token():
-    with open("config.yml", "r") as file:
-        config = yaml.safe_load(file)
-    return config["auth"]["bearer_token"]
+# Carregar token da variável de ambiente
+BEARER_TOKEN = os.getenv("bearier_token")
 
-BEARER_TOKEN = load_token()
+if not BEARER_TOKEN:
+    raise ValueError("A variável de ambiente BEARIER_TOKEN não está definida.")
 
 # Instância do FastAPI
 app = FastAPI(
