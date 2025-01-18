@@ -16,3 +16,6 @@ venv.bak/
 *.db
 *.sqlite3
 db/data/
+
+# Protect sensible data
+.env
