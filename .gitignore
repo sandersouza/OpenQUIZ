@@ -19,3 +19,4 @@ db/data/
 
 # Protect sensible data
 .env
+docker-compose.yml
