@@ -70,7 +70,7 @@ Redoc   - https://{server}:4433/redoc
 [
     {"Content-Type": "application/json"},
     {"Accept-Encoding":"gzip, deflate, br"},
-    {"Connection": keep-alive"}
+    {"Connection": "keep-alive"}
 ]
 ```
 

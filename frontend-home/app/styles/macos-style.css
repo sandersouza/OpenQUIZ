@@ -37,8 +37,14 @@ body {
 }
 
 .btn-outline-primary {
-    color: #007bff;
-    border-color: #007bff;
+    width: 80px;
+    height: 30px;
+    line-height: 30px; /* Centraliza verticalmente */
+    padding: 0 15px;   /* Espaçamento horizontal */
+    font-size: 0.875rem;
+    display: inline-flex;
+    align-items: center; /* Centraliza verticalmente */
+    justify-content: center; /* Centraliza horizontalmente */
 }
 
 .btn-outline-primary:hover {
@@ -65,12 +71,6 @@ body {
     cursor: pointer;
 }
 
-#theme-icon {
-    font-size: 1.5rem;
-    margin-left: 10px;
-    transition: color 0.3s ease;
-}
-
 /* Caixa de conteúdo */
 #readme-container {
     background-color: #ffffff;
@@ -86,4 +86,23 @@ pre {
     padding: 15px;
     border-radius: 8px;
     overflow: auto;
+}
+
+/* Botão de alternância personalizado */
+.custom-switch {
+    width: 60px !important;
+    height: 30px !important;
+    background-color: #ddd !important;
+    border-radius: 15px !important;
+    position: relative;
+    transition: background-color 0.3s ease, width 0.3s ease;
+    cursor: pointer;
+}
+
+.custom-switch:checked {
+    background-color: #4caf50 !important;
+}
+
+.form-check-input.custom-switch {
+    margin: 0 !important;
 }

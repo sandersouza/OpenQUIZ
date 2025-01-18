@@ -2,24 +2,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const themeToggler = document.getElementById("theme-toggler");
     const lightModeLink = document.getElementById("light-mode");
     const darkModeLink = document.getElementById("dark-mode");
-    const themeIcon = document.getElementById("theme-icon");
 
-    // Função para alternar tema
+    // Verifica se os elementos existem no DOM
+    if (!themeToggler || !lightModeLink || !darkModeLink) {
+        console.error("Erro: Elementos necessários não encontrados no DOM.");
+        return;
+    }
+
+    // Função para alternar entre os temas
     const toggleTheme = (isDark) => {
         if (isDark) {
             darkModeLink.disabled = false;
             lightModeLink.disabled = true;
-            themeIcon.textContent = "dark_mode"; // Ícone de lua
-            localStorage.setItem("theme", "dark"); // Salvar tema no localStorage
+            localStorage.setItem("theme", "dark");
         } else {
             darkModeLink.disabled = true;
             lightModeLink.disabled = false;
-            themeIcon.textContent = "light_mode"; // Ícone de sol
-            localStorage.setItem("theme", "light"); // Salvar tema no localStorage
+            localStorage.setItem("theme", "light");
         }
     };
 
-    // Verifica o tema salvo no localStorage
+    // Define o tema com base no LocalStorage
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme === "dark") {
         themeToggler.checked = true;
@@ -29,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
         toggleTheme(false);
     }
 
-    // Adiciona evento para alternar o tema
+    // Alterna o tema quando o botão é clicado
     themeToggler.addEventListener("change", () => {
         toggleTheme(themeToggler.checked);
     });
