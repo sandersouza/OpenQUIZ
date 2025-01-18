@@ -1,0 +1,89 @@
+/* Estilo geral */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    color: #333333;
+}
+
+/* Barra de navegação */
+.navbar {
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.navbar a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.navbar a:hover {
+    color: #0056b3;
+}
+
+/* Botões */
+.btn {
+    border-radius: 25px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.btn-outline-primary {
+    color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-outline-primary:hover {
+    background-color: #007bff;
+    color: #ffffff;
+}
+
+/* Interruptor de tema */
+.form-check-input {
+    width: 50px;
+    height: 25px;
+    background-color: #ddd;
+    border-radius: 15px;
+    transition: background-color 0.3s ease;
+}
+
+.form-check-input:checked {
+    background-color: #4caf50;
+}
+
+.form-check-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+#theme-icon {
+    font-size: 1.5rem;
+    margin-left: 10px;
+    transition: color 0.3s ease;
+}
+
+/* Caixa de conteúdo */
+#readme-container {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+/* Código Markdown */
+pre {
+    font-family: Consolas, Monaco, "Courier New", monospace;
+    background-color: #f4f4f4;
+    padding: 15px;
+    border-radius: 8px;
+    overflow: auto;
+}

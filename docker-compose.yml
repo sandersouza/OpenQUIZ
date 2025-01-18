@@ -39,14 +39,14 @@ services:
       mongo:
         condition: service_healthy
 
-  frontend-admin:
+  frontend-home:
     image: nginx:latest
-    container_name: openquiz_frontend_admin
+    container_name: openquiz_frontend_home
     ports:
-      - "8080:80"
+      - "8080:8080"
     volumes:
-      - ./frontend-admin/:/usr/share/nginx/html:ro
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./frontend-home/app:/usr/share/nginx/html:ro
+      - ./frontend-home/nginx.conf:/etc/nginx/nginx.conf:ro
     restart: unless-stopped
     depends_on:
       - api
