@@ -11,14 +11,7 @@ services:
       - ./application/config.yml:/app/config.yml
     depends_on:
       - mongo
-    environment:
-      - bearier_token=${bearier_token}
-      - mongo_srv=${mongo_srv}
-      - mongo_db=${mongo_db}
-      - mongo_port=${mongo_port}
-      - mongo_pass=${mongo_pass}
-      - mongo_user=${mongo_user}
-      - app_port=${app_port}
+    env_file: .env
 
   mongo:
     image: mongo:${mongo_version}
