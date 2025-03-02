@@ -1,27 +1,45 @@
+// sidebar.js
+
+// Função para carregar todas as queries da API
 async function loadAllQueries() {
     try {
+        console.log("Carregando queries...");
         const res = await fetch("/queries");
+        if (!res.ok) {
+            throw new Error(`Erro na resposta da API: ${res.status}`);
+        }
         const queries = await res.json();
+        console.log("Queries carregadas:", queries);
         const queriesList = document.getElementById("queries-list");
+        if (!queriesList) {
+            console.error("Elemento com id 'queries-list' não foi encontrado no DOM.");
+            return;
+        }
         queriesList.innerHTML = "";
-        queries.forEach((query) => {
-            addQueryToSidebar(query.name, query._id, formatMethod(query.method));
+        queries.forEach(query => {
+            if (query.name && query._id) {
+                addQueryToSidebar(query.name, query._id, formatMethod(query.method));
+            } else {
+                console.warn("Dados da query inválidos:", query);
+            }
         });
     } catch (err) {
         console.error("Error loading queries:", err);
     }
 }
 
+// Função para carregar uma query específica e atualizar os campos do formulário
 async function loadQuery(queryId, selectedItem) {
     try {
         const res = await fetch(`/queries/${queryId}`);
+        if (!res.ok) {
+            throw new Error(`Erro na resposta da API: ${res.status}`);
+        }
         const data = await res.json();
-
         if (data.error) {
             showFeedbackMessage(`Error loading query: ${data.error}`);
             return;
         }
-
         document.getElementById("query-url").value = data.url || "";
         document.getElementById("query-method").value = data.method || "GET";
         document.getElementById("query-body").value = data.body ? JSON.stringify(data.body, null, 2) : "";
@@ -34,28 +52,26 @@ async function loadQuery(queryId, selectedItem) {
 
         console.log(`Query loaded: ${currentQueryName} (${currentQueryId})`);
 
-        // Atualizar o estilo visual da query selecionada
-        document.querySelectorAll(".query-item").forEach((item) => item.classList.remove("selected"));
+        document.querySelectorAll(".query-item").forEach(item => item.classList.remove("selected"));
         selectedItem.classList.add("selected");
     } catch (err) {
         console.error("Error loading query:", err);
     }
 }
 
+// Função para deletar uma query
 async function deleteQuery(queryId) {
     try {
         const confirmation = confirm("Are you sure you want to delete this query?");
         if (!confirmation) return;
 
         const res = await fetch(`/queries/${queryId}`, { method: "DELETE" });
-
         if (!res.ok) {
             const error = await res.json();
             console.error("Error deleting query:", error.message);
             showFeedbackMessage(`Error: ${error.message}`);
             return;
         }
-
         showFeedbackMessage("Query deleted successfully!");
         loadAllQueries();
     } catch (err) {
@@ -64,35 +80,33 @@ async function deleteQuery(queryId) {
     }
 }
 
+// Função para duplicar uma query
 async function duplicateQuery(queryId) {
     try {
         const res = await fetch(`/queries/${queryId}`);
+        if (!res.ok) {
+            throw new Error("Failed to load query for duplication");
+        }
         const originalQuery = await res.json();
-
         if (originalQuery.error) {
             showFeedbackMessage(`Error loading query for duplication: ${originalQuery.error}`);
             return;
         }
-
-        const duplicatedQuery = {
-            ...originalQuery,
-            name: originalQuery.name
-        };
-        delete duplicatedQuery._id; // Remover ID para evitar conflito
+        // Cria uma cópia da query sem o ID
+        const duplicatedQuery = { ...originalQuery, name: originalQuery.name };
+        delete duplicatedQuery._id;
 
         const duplicateRes = await fetch("/queries", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(duplicatedQuery)
         });
-
         if (!duplicateRes.ok) {
             const error = await duplicateRes.json();
             console.error("Error duplicating query:", error.message);
             showFeedbackMessage(`Error: ${error.message}`);
             return;
         }
-
         showFeedbackMessage("Query duplicated successfully!");
         loadAllQueries();
     } catch (err) {
@@ -101,10 +115,14 @@ async function duplicateQuery(queryId) {
     }
 }
 
+// Função para adicionar uma query ao sidebar
 function addQueryToSidebar(queryName, queryId, method) {
     const queriesList = document.getElementById("queries-list");
+    if (!queriesList) {
+        console.error("Elemento com id 'queries-list' não foi encontrado.");
+        return;
+    }
     const newItem = document.createElement("li");
-
     newItem.innerHTML = `
         <div class="queries-label">
             <span class="queries-method ${method.toLowerCase()}">${method}</span>
@@ -117,7 +135,6 @@ function addQueryToSidebar(queryName, queryId, method) {
             </div>
         </div>
     `;
-
     newItem.dataset.queryId = queryId;
     newItem.classList.add("query-item");
     queriesList.appendChild(newItem);
@@ -127,7 +144,7 @@ function addQueryToSidebar(queryName, queryId, method) {
 
     menuButton.addEventListener("click", (e) => {
         e.stopPropagation();
-        document.querySelectorAll(".menu-options.visible").forEach((menu) => {
+        document.querySelectorAll(".menu-options.visible").forEach(menu => {
             menu.classList.remove("visible");
         });
         menuOptions.classList.toggle("visible");
@@ -148,11 +165,11 @@ function addQueryToSidebar(queryName, queryId, method) {
     });
 }
 
+// Função para formatar o método HTTP
 function formatMethod(method) {
     if (!method || typeof method !== "string") {
         return "UNKNOWN";
     }
-
     const methodMap = {
         GET: "GET", POST: "POST", PUT: "PUT",
         DELETE: "DEL", COPY: "COPY", HEAD: "HEAD",
@@ -160,17 +177,13 @@ function formatMethod(method) {
         PURGE: "PURG", LOCK: "LOCK", UNLOCK: "UNLK",
         PROPFIND: "PFND", VIEW: "VIEW"
     };
-
     return methodMap[method.toUpperCase()] || method.toUpperCase();
 }
 
 /* ===== Funções para Gerenciamento do Modal ===== */
-
-// Função auxiliar para abrir o modal com comportamento dinâmico
 function openModal(initialValue, onSubmit) {
     const modal = document.getElementById("query-modal");
     const inputField = document.getElementById("query-name-input");
-    // Clonar os botões para remover quaisquer event listeners anteriores
     const oldSubmitBtn = document.getElementById("submit-query-btn");
     const oldCancelBtn = document.getElementById("cancel-query-btn");
     const submitBtn = oldSubmitBtn.cloneNode(true);
@@ -182,14 +195,12 @@ function openModal(initialValue, onSubmit) {
     inputField.value = initialValue || "";
     inputField.focus();
 
-    // Limitar o tamanho do input
     inputField.addEventListener("input", () => {
         if (inputField.value.length > 23) {
             inputField.value = inputField.value.slice(0, 23);
         }
     });
 
-    // Configurar o botão de submit com a função passada
     submitBtn.addEventListener("click", async () => {
         const value = inputField.value.trim();
         if (value.length < 3) {
@@ -200,17 +211,14 @@ function openModal(initialValue, onSubmit) {
         closeModal();
     });
 
-    // Configurar o botão de cancelamento
     cancelBtn.addEventListener("click", closeModal);
 
-    // Configurar o fechamento do modal com a tecla Escape
     const keydownHandler = (e) => {
         if (e.key === "Escape") {
             closeModal();
         }
     };
     document.addEventListener("keydown", keydownHandler);
-    // Armazenar o handler para remoção posterior
     modal.dataset.keydownHandler = keydownHandler;
 }
 
@@ -219,33 +227,26 @@ function closeModal() {
     const inputField = document.getElementById("query-name-input");
     modal.classList.add("hidden");
     inputField.value = "";
-
-    // Remover o listener de keydown registrado
     if (modal.dataset.keydownHandler) {
         document.removeEventListener("keydown", modal.dataset.keydownHandler);
         delete modal.dataset.keydownHandler;
     }
 }
 
-// Função para criar uma nova query usando o modal
 function showQueryModal() {
     openModal("", async (queryName) => {
         await createQuery(queryName);
     });
 }
 
-// Função para renomear uma query existente usando o modal
 async function renameQuery(queryId) {
     try {
-        // Buscar a query atual para preencher o modal
         const res = await fetch(`/queries/${queryId}`);
         const queryData = await res.json();
-
         if (queryData.error) {
             showFeedbackMessage(`Error loading query for renaming: ${queryData.error}`);
             return;
         }
-
         openModal(queryData.name, async (newName) => {
             try {
                 const payload = { name: newName };
@@ -254,13 +255,11 @@ async function renameQuery(queryId) {
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
                 });
-
                 if (!updateRes.ok) {
                     const error = await updateRes.json();
                     showFeedbackMessage(`Error: ${error.message}`);
                     return;
                 }
-
                 showFeedbackMessage("Query renamed successfully!");
                 await loadAllQueries();
                 const selectedItem = document.querySelector(`.query-item[data-query-id="${queryId}"]`);
@@ -300,9 +299,8 @@ async function createQuery(queryName) {
         } else {
             showFeedbackMessage("Query created successfully!");
             await loadAllQueries();
-            // Se o endpoint retornar o ID da nova query, carregamos seu painel automaticamente.
-            if (data._id) {
-                const newQueryId = data._id;
+            if (data.id) {
+                const newQueryId = data.id;
                 const selectedItem = document.querySelector(`.query-item[data-query-id="${newQueryId}"]`);
                 if (selectedItem) {
                     await loadQuery(newQueryId, selectedItem);
@@ -315,7 +313,6 @@ async function createQuery(queryName) {
     }
 }
 
-// Eventos de abertura do modal e alternância da sidebar
 document.getElementById("new-blank-query-btn").addEventListener("click", showQueryModal);
 document.getElementById("toggle-sidebar-btn").addEventListener("click", () => {
     const sidebar = document.querySelector(".queries-sidebar");
