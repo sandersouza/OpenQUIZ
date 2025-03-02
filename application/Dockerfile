@@ -8,4 +8,4 @@ RUN pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted
 
 EXPOSE 4433
 
-CMD ["hypercorn", "app.main:app", "-c", "hypercorn_config.py"]
+CMD ["hypercorn", "app.main:app", "-c", "hypercorn_config.toml","--reload"]

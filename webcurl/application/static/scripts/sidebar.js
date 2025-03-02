@@ -34,7 +34,7 @@ async function loadQuery(queryId, selectedItem) {
 
         console.log(`Query loaded: ${currentQueryName} (${currentQueryId})`);
 
-        // Atualizar estilo visual para a query selecionada
+        // Atualizar o estilo visual da query selecionada
         document.querySelectorAll(".query-item").forEach((item) => item.classList.remove("selected"));
         selectedItem.classList.add("selected");
     } catch (err) {
@@ -74,12 +74,11 @@ async function duplicateQuery(queryId) {
             return;
         }
 
-        // Modificar o nome da query para indicar duplicação
         const duplicatedQuery = {
             ...originalQuery,
-            name: `${originalQuery.name}`
+            name: originalQuery.name
         };
-        delete duplicatedQuery._id; // Remover ID para evitar conflito no banco
+        delete duplicatedQuery._id; // Remover ID para evitar conflito
 
         const duplicateRes = await fetch("/queries", {
             method: "POST",
@@ -151,7 +150,7 @@ function addQueryToSidebar(queryName, queryId, method) {
 
 function formatMethod(method) {
     if (!method || typeof method !== "string") {
-        return "UNKNOWN"; // Valor padrão se o campo `method` estiver ausente ou inválido
+        return "UNKNOWN";
     }
 
     const methodMap = {
@@ -165,15 +164,80 @@ function formatMethod(method) {
     return methodMap[method.toUpperCase()] || method.toUpperCase();
 }
 
+/* ===== Funções para Gerenciamento do Modal ===== */
+
+// Função auxiliar para abrir o modal com comportamento dinâmico
+function openModal(initialValue, onSubmit) {
+    const modal = document.getElementById("query-modal");
+    const inputField = document.getElementById("query-name-input");
+    // Clonar os botões para remover quaisquer event listeners anteriores
+    const oldSubmitBtn = document.getElementById("submit-query-btn");
+    const oldCancelBtn = document.getElementById("cancel-query-btn");
+    const submitBtn = oldSubmitBtn.cloneNode(true);
+    const cancelBtn = oldCancelBtn.cloneNode(true);
+    oldSubmitBtn.parentNode.replaceChild(submitBtn, oldSubmitBtn);
+    oldCancelBtn.parentNode.replaceChild(cancelBtn, oldCancelBtn);
+
+    modal.classList.remove("hidden");
+    inputField.value = initialValue || "";
+    inputField.focus();
+
+    // Limitar o tamanho do input
+    inputField.addEventListener("input", () => {
+        if (inputField.value.length > 23) {
+            inputField.value = inputField.value.slice(0, 23);
+        }
+    });
+
+    // Configurar o botão de submit com a função passada
+    submitBtn.addEventListener("click", async () => {
+        const value = inputField.value.trim();
+        if (value.length < 3) {
+            showFeedbackMessage("Query name must be at least 3 characters!");
+            return;
+        }
+        await onSubmit(value);
+        closeModal();
+    });
+
+    // Configurar o botão de cancelamento
+    cancelBtn.addEventListener("click", closeModal);
+
+    // Configurar o fechamento do modal com a tecla Escape
+    const keydownHandler = (e) => {
+        if (e.key === "Escape") {
+            closeModal();
+        }
+    };
+    document.addEventListener("keydown", keydownHandler);
+    // Armazenar o handler para remoção posterior
+    modal.dataset.keydownHandler = keydownHandler;
+}
+
+function closeModal() {
+    const modal = document.getElementById("query-modal");
+    const inputField = document.getElementById("query-name-input");
+    modal.classList.add("hidden");
+    inputField.value = "";
+
+    // Remover o listener de keydown registrado
+    if (modal.dataset.keydownHandler) {
+        document.removeEventListener("keydown", modal.dataset.keydownHandler);
+        delete modal.dataset.keydownHandler;
+    }
+}
+
+// Função para criar uma nova query usando o modal
+function showQueryModal() {
+    openModal("", async (queryName) => {
+        await createQuery(queryName);
+    });
+}
+
+// Função para renomear uma query existente usando o modal
 async function renameQuery(queryId) {
     try {
-        // Exibir o modal com o nome atual da query
-        const modal = document.getElementById("query-modal");
-        const inputField = document.getElementById("query-name-input");
-        const submitBtn = document.getElementById("submit-query-btn");
-        const cancelBtn = document.getElementById("cancel-query-btn");
-
-        // Buscar o nome atual da query no banco
+        // Buscar a query atual para preencher o modal
         const res = await fetch(`/queries/${queryId}`);
         const queryData = await res.json();
 
@@ -182,23 +246,13 @@ async function renameQuery(queryId) {
             return;
         }
 
-        modal.classList.remove("hidden");
-        inputField.value = queryData.name;
-
-        // Função para salvar a alteração
-        const handleRename = async () => {
-            const newName = inputField.value.trim();
-            if (newName.length < 3) {
-                showFeedbackMessage("Query name must be at least 3 characters!");
-                return;
-            }
-
+        openModal(queryData.name, async (newName) => {
             try {
-                const payload = { name: newName }; // Apenas o campo `name`
+                const payload = { name: newName };
                 const updateRes = await fetch(`/queries/${queryId}`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload), // Enviar o payload correto
+                    body: JSON.stringify(payload)
                 });
 
                 if (!updateRes.ok) {
@@ -208,64 +262,20 @@ async function renameQuery(queryId) {
                 }
 
                 showFeedbackMessage("Query renamed successfully!");
-                loadAllQueries(); // Atualizar a sidebar
-                closeModal();
+                await loadAllQueries();
+                const selectedItem = document.querySelector(`.query-item[data-query-id="${queryId}"]`);
+                if (selectedItem) {
+                    await loadQuery(queryId, selectedItem);
+                }
             } catch (err) {
                 console.error("Error renaming query:", err);
                 showFeedbackMessage("An error occurred while renaming the query.");
-            }
-        };
-
-        // Associar eventos ao modal
-        submitBtn.onclick = handleRename;
-        cancelBtn.onclick = closeModal;
-
-        document.addEventListener("keydown", (e) => {
-            if (e.key === "Escape") {
-                closeModal();
             }
         });
     } catch (err) {
         console.error("Error loading query for renaming:", err);
         showFeedbackMessage("An error occurred while preparing to rename the query.");
     }
-}
-
-function showQueryModal() {
-    const modal = document.getElementById("query-modal");
-    const inputField = document.getElementById("query-name-input");
-    const submitBtn = document.getElementById("submit-query-btn");
-    const cancelBtn = document.getElementById("cancel-query-btn");
-    modal.classList.remove("hidden");
-    inputField.focus();
-    inputField.addEventListener("input", () => {
-        if (inputField.value.length > 23) {
-            inputField.value = inputField.value.slice(0, 23);
-        }
-    });
-    submitBtn.addEventListener("click", () => {
-        const queryName = inputField.value.trim();
-        if (queryName.length < 3) {
-            showFeedbackMessage("Query name must be at least 3 characters!");
-            return;
-        }
-        createQuery(queryName);
-        closeModal();
-    });
-    cancelBtn.addEventListener("click", closeModal);
-    document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") {
-            closeModal();
-        }
-    });
-}
-
-function closeModal() {
-    const modal = document.getElementById("query-modal");
-    const inputField = document.getElementById("query-name-input");
-    modal.classList.add("hidden");
-    inputField.value = "";
-    document.removeEventListener("keydown", closeModal);
 }
 
 async function createQuery(queryName) {
@@ -289,7 +299,15 @@ async function createQuery(queryName) {
             showFeedbackMessage(`Error: ${data.error}`);
         } else {
             showFeedbackMessage("Query created successfully!");
-            loadAllQueries();
+            await loadAllQueries();
+            // Se o endpoint retornar o ID da nova query, carregamos seu painel automaticamente.
+            if (data._id) {
+                const newQueryId = data._id;
+                const selectedItem = document.querySelector(`.query-item[data-query-id="${newQueryId}"]`);
+                if (selectedItem) {
+                    await loadQuery(newQueryId, selectedItem);
+                }
+            }
         }
     } catch (err) {
         console.error("Error creating new query:", err);
@@ -297,8 +315,11 @@ async function createQuery(queryName) {
     }
 }
 
+// Eventos de abertura do modal e alternância da sidebar
 document.getElementById("new-blank-query-btn").addEventListener("click", showQueryModal);
 document.getElementById("toggle-sidebar-btn").addEventListener("click", () => {
+    const sidebar = document.querySelector(".queries-sidebar");
+    const toggleContainer = document.querySelector(".toggle-container");
     const isHidden = sidebar.classList.toggle("hidden");
     toggleContainer.style.transform = isHidden ? "rotateY(180deg)" : "translateX(0)";
 });

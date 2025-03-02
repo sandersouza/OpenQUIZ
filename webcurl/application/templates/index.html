@@ -18,7 +18,17 @@
             <div class="queries-header">
                 <h2 class="queries-title">Queries</h2>
                 <div class="queries-buttons">
-                    <button id="new-blank-query-btn" title="Create a new blank query"><i class="bi bi-plus-square-fill"></i></button>
+                    <button id="new-blank-query-btn" title="Create a new blank query">
+                        <i class="bi bi-plus-square-fill"></i>
+                    </button>
+                    <!-- Botão de exportação de queries -->
+                    <button id="export-query-btn" title="Export queries">
+                        <i class="bi bi-upload"></i>
+                    </button>
+                    <!-- Botão de importação de queries -->
+                    <button id="import-query-btn" title="Import queries">
+                        <i class="bi bi-download"></i>
+                    </button>
                 </div>
             </div>
             <ul id="queries-list">
@@ -32,7 +42,9 @@
             </ul>
             <!-- Lingueta para ocultar/exibir a sidebar -->
             <div class="toggle-container">
-                <button id="toggle-sidebar-btn" title="Toggle sidebar" class="toggle-lingueta"><i class="bi bi-chevron-left"></i></button>
+                <button id="toggle-sidebar-btn" title="Toggle sidebar" class="toggle-lingueta">
+                    <i class="bi bi-chevron-left"></i>
+                </button>
             </div>
         </div>        
         
@@ -81,8 +93,12 @@
             <!-- Token e Execução -->
             <div class="request-action">
                 <input type="text" id="bearer-token" placeholder="Bearer Token" aria-label="Bearer Token">
-                <button id="save-query-btn" aria-label="Save Query"><i class="bi bi-floppy"></i></button>
-                <button id="execute-query-btn" aria-label="Execute Query"><i class="bi bi-arrow-return-right"></i></button>
+                <button id="save-query-btn" aria-label="Save Query">
+                    <i class="bi bi-floppy"></i>
+                </button>
+                <button id="execute-query-btn" aria-label="Execute Query">
+                    <i class="bi bi-arrow-return-right"></i>
+                </button>
             </div>            
             
             <!-- Headers da Resposta -->
@@ -99,9 +115,13 @@
     <!-- Modal de entrada para query -->
     <div id="query-modal" class="modal hidden">
         <div class="modal-content">
-            <input type="text" class="modal-content inputbox" id="query-name-input" placeholder="Enter query name" aria-label="Query name" maxlenggt="20">
-            <button class="modal-content button" id="submit-query-btn" title="Save query"><i class="bi bi-floppy"></i></button>
-            <button class="modal-content button esc" id="cancel-query-btn" title="Cancel"><i class="bi bi-escape"></i></button>
+            <input type="text" class="modal-content inputbox" id="query-name-input" placeholder="Enter query name" aria-label="Query name" maxlength="20">
+            <button class="modal-content button" id="submit-query-btn" title="Save query">
+                <i class="bi bi-floppy"></i>
+            </button>
+            <button class="modal-content button esc" id="cancel-query-btn" title="Cancel">
+                <i class="bi bi-escape"></i>
+            </button>
         </div>
     </div>
 
@@ -111,5 +131,9 @@
     <script src="/static/scripts/highlight.js"></script>
     <script src="/static/scripts/query_manager.js"></script>
     <script src="/static/scripts/sidebar.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+    <script src="/static/scripts/sortable_init.js"></script>
+    <script src="/static/scripts/export_queries.js"></script>
+    <script src="/static/scripts/import_queries.js"></script>
 </body>
 </html>

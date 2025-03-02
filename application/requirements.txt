@@ -4,3 +4,5 @@ hypercorn==0.17.3
 aioquic==1.2.0
 python-dotenv==1.0.1
 PyYAML>=6.0
+fastapi-limiter==0.1.6
+aioredis==2.0.1
