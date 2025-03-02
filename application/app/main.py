@@ -43,7 +43,7 @@ async def authenticate(credentials: HTTPAuthorizationCredentials = Depends(secur
 async def startup():
     print("Iniciando conexão com o MongoDB...")
     await connect_to_mongo(app)
-    redis = aioredis.from_url("redis://redis:6379", encoding="utf8", decode_responses=True)
+    redis = aioredis.from_url("redis://valkey:6379", encoding="utf8", decode_responses=True)
     await FastAPILimiter.init(redis)
 
 @app.on_event("shutdown")
