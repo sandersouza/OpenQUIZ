@@ -30,7 +30,7 @@ app = FastAPI(
 async def custom_rate_limit_handler(request: Request, exc: Exception):
     return JSONResponse(
         status_code=429,
-        content={"message": "Ratelimit reached... only 5 checks per minute."}
+        content={"message": "Ratelimit reached... wait."}
     )
 
 # Middleware de autenticação
