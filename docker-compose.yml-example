@@ -4,6 +4,7 @@ services:
     build: ./application
     ports:
       - "${app_port}:4433"
+      - "${app_port}:4433/udp"
       - "8000:8000"
     volumes:
       - ./application/app:/app/app
