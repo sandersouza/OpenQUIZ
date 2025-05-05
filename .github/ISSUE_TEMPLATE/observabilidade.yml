@@ -1,0 +1,15 @@
+name: Checklist de Observabilidade
+description: Responda se a aplicação possui observabilidade
+title: "[Checklist] Observabilidade"
+labels: [observabilidade]
+body:
+  - type: dropdown
+    id: observabilidade
+    attributes:
+      label: A aplicação possui observabilidade?
+      options:
+        - SIM
+        - NÃO
+        - N.A.
+    validations:
+      required: true
