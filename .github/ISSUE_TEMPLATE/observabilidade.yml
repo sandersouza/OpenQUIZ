@@ -13,3 +13,14 @@ body:
         - N.A.
     validations:
       required: true
+  
+  - type: dropdown
+    id: slo
+    attributes:
+      label: A aplicação possui SLO configurado?
+      options:
+        - SIM
+        - NÃO
+        - N.A.
+    validations:
+      required: true
