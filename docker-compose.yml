@@ -8,10 +8,10 @@ services:
       - "8000:8000"
     volumes:
       - ./application/app:/app/app
-      - ./application/hypercorn_config.py:/app/hypercorn_config.py
-      - ./application/config.yml:/app/config.yml
+      - ./application/hypercorn_config.toml:/app/hypercorn_config.toml
     depends_on:
       - mongo
+      - valkey
     env_file: .env
 
   mongo:
@@ -51,6 +51,12 @@ services:
     restart: unless-stopped
     depends_on:
       - api
+  
+  valkey:
+    image: valkey/valkey:latest
+    container_name: openquiz_valkey
+    ports:
+      - "6379:6379"
 
   webcurl:
     build:

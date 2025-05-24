@@ -18,5 +18,5 @@ venv.bak/
 db/data/
 
 # Protect sensible data
-.env
-docker-compose.yml
+# .env
+# docker-compose.yml
