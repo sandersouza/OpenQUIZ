@@ -34,7 +34,9 @@ You need to select MongoDB version in .env ( instructions inside than )... Mongo
 **Docker** can be changed by any orchestrator with compose support like docker, podman and rancher desktop. Choose your, and change it in the command. My recommendation is PODMAN, fast, security, don't need root/admin to run, and other little good features, see it here [PODMAN](https://podman.io/).
 
 ```bash
-$ docker compose -up -d --build
+$ docker compose up -d --build
+or
+$ podman compose up -d --build
 ```
 
 >[!IMPORTANT]
