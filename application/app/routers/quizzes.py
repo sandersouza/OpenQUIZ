@@ -41,12 +41,10 @@ async def list_quizzes(request: Request):
             name=quiz["name"],
             questions=[
                 QuestionOutput(
-                    id=None,
                     question_text=question["question_text"],
                     points=question["points"],
                     answers=[
                         AnswerOutput(
-                            id=None,
                             answer_text=answer["answer_text"],
                             is_correct=answer["is_correct"]
                         )
@@ -95,12 +93,10 @@ async def create_quiz(request: Request, quiz: QuizInput):
         name=created_quiz["name"],
         questions=[
             QuestionOutput(
-                id=None,
                 question_text=question["question_text"],
                 points=question["points"],
                 answers=[
                     AnswerOutput(
-                        id=None,
                         answer_text=answer["answer_text"],
                         is_correct=answer["is_correct"]
                     )
@@ -146,18 +142,16 @@ async def update_quiz(request: Request, id: str, quiz: QuizInput):
     await db["quizzes"].update_one({"_id": ObjectId(id)}, {"$set": updated_document})
     updated_quiz = await db["quizzes"].find_one({"_id": ObjectId(id)})
 
-    log_operation(client_ip, "PUT", f"/quizzes/{id}")
+    log_operation(client_ip, "PUT", f"/quizzes/{id}", quiz_id=id)
     return QuizOutput(
         id=str(updated_quiz["_id"]),
         name=updated_quiz["name"],
         questions=[
             QuestionOutput(
-                id=None,
                 question_text=question["question_text"],
                 points=question["points"],
                 answers=[
                     AnswerOutput(
-                        id=None,
                         answer_text=answer["answer_text"],
                         is_correct=answer["is_correct"]
                     )
@@ -174,18 +168,18 @@ async def delete_quiz(request: Request, id: str):
     client_ip = request.client.host
 
     if db is None:
-        log_operation(client_ip, "DELETE", f"/quizzes/{id}", status="error - database connection failed")
+        log_operation(client_ip, "DELETE", f"/quizzes/{id}", quiz_id=id, status="error - database connection failed")
         raise HTTPException(status_code=500, detail="Erro na conexão com o banco de dados")
     
     existing_quiz = await db["quizzes"].find_one({"_id": ObjectId(id)})
     if not existing_quiz:
-        log_operation(client_ip, "DELETE", f"/quizzes/{id}", status="error - quiz not found")
+        log_operation(client_ip, "DELETE", f"/quizzes/{id}", quiz_id=id, status="error - quiz not found")
         raise HTTPException(status_code=404, detail="Quiz não encontrado")
     
     result = await db["quizzes"].delete_one({"_id": ObjectId(id)})
     if result.deleted_count == 0:
-        log_operation(client_ip, "DELETE", f"/quizzes/{id}", status="error - quiz not found")
+        log_operation(client_ip, "DELETE", f"/quizzes/{id}", quiz_id=id, status="error - quiz not found")
         raise HTTPException(status_code=404, detail="Quiz não encontrado")
 
-    log_operation(client_ip, "DELETE", f"/quizzes/{id}")
+    log_operation(client_ip, "DELETE", f"/quizzes/{id}", quiz_id=id)
     return {"message": f"Quiz com ID {id} foi deletado com sucesso."}
