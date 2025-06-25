@@ -4,9 +4,11 @@ TSDB_URL="http://localhost:8086/api/v2/write?orgID=2d72070bfb91b366&bucket=stres
 TSDB_TOKEN="Authorization: Token TfqpqTgS0s3o-E4pZhN9kzN2liJH4EysdoQvJshuRbqBXH9qRg39rXPlSU0pCNNhsiNDsACxgk52aKF3SpNsbg=="
 
 containers=($(docker ps --filter "ancestor=alpine/curl-http3:latest" --format "{{.Names}}"))
+i=0
 
 while sleep 1; do
-    while [ $i -lt ${#containers[@]} ]; do
+    i=0
+    while [ "$i" -lt "${#containers[@]}" ]; do
         (
             CONTAINER=${containers[$i]}
             START=$(($(date +%s) * 1000 + $(date +%-N) / 1000000))

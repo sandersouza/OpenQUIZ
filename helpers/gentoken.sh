@@ -12,8 +12,8 @@ function main() {
         exit 0
     fi
 
-    token=$( cat $environment | grep "bearier_token" | awk -F'=' '{print $2}' )
-    if [ -n $token ]; then
+    token=$(grep "bearier_token" "$environment" | awk -F'=' '{print $2}')
+    if [ -n "$token" ]; then
         read -p "Bearier Token yet exist, want to create a new one (Y/n)?" select
         if [ "$select" == "Y" ]; then
             echo -n "Generate new token... "
