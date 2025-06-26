@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     };
+    window.applyTranslations = replacePlaceholders;
 
     // Função para carregar o idioma
     const loadLanguage = async (lang) => {
@@ -18,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const response = await fetch(`languages/${lang}.json`);
             const translations = await response.json();
             replacePlaceholders(translations); // Aplica as traduções
+            window.currentTranslations = translations;
         } catch (error) {
             console.error("Erro ao carregar o idioma:", error);
         }

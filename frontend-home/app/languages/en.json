@@ -2,5 +2,19 @@
   "register": "Register",
   "login": "Login",
   "welcome": "Welcome to OpenQUIZ",
-  "readme_placeholder": "This is a placeholder for the README content."
+  "readme_placeholder": "This is a placeholder for the README content.",
+  "register_title": "Create Account",
+  "email": "Email",
+  "password": "Password",
+  "confirm_password": "Confirm Password",
+  "first_name": "First Name",
+  "last_name": "Last Name",
+  "nickname": "Nickname",
+  "submit": "Submit",
+  "invalid_email": "Invalid email format",
+  "invalid_password": "Password must contain at least one uppercase letter, one number, and one special character, and be 10-30 characters long.",
+  "password_mismatch": "Passwords do not match",
+  "registration_success": "User created successfully!",
+  "registration_error": "Error creating user",
+  "connection_error": "Connection error"
 }
