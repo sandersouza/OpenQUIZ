@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi_limiter import FastAPILimiter
 from fastapi_limiter.depends import RateLimiter
-from app.routers import quizzes, healthcheck
+from app.routers import quizzes, healthcheck, users
 from app.database import connect_to_mongo
 
 import os
@@ -64,4 +64,11 @@ app.include_router(
     prefix="/quizzes",
     dependencies=[Depends(authenticate)],
     tags=["quizzes"]
+)
+
+# Rota para gerenciamento de usuários
+app.include_router(
+    users.router,
+    prefix="/users",
+    tags=["users"]
 )
