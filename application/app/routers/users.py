@@ -36,12 +36,10 @@ class UserOutput(BaseModel):
     first_name: str
     last_name: str
 
-
 class UserListOutput(BaseModel):
     users: list[UserOutput]
     current_page: int
     total_pages: int
-
 
 def log_operation(ip: str, method: str, route: str, user_id: str = "N/A", status: str = "success"):
     timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %z")
@@ -84,7 +82,6 @@ async def create_user(request: Request, user: UserInput):
         first_name=created_user["first_name"],
         last_name=created_user["last_name"],
     )
-
 
 @router.get("/", response_model=UserListOutput)
 async def list_users(request: Request, email: str | None = None, page: int = 1):
