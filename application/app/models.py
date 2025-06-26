@@ -45,3 +45,17 @@ class QuizOutput(BaseModel):
     id: str
     name: str
     questions: List[QuestionOutput] = []
+
+class UserInput(BaseModel):
+    """Modelo para entrada de dados de um usuário."""
+    email: str
+    first_name: str
+    last_name: str
+    password: str
+
+class UserOutput(BaseModel):
+    """Modelo para saída de dados de um usuário."""
+    id: str
+    email: str
+    first_name: str
+    last_name: str
