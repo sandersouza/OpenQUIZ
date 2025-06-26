@@ -35,30 +35,46 @@
         </div>
     </main>
 
-    <!-- Espaço para carregar o modal -->
-    <div id="modalContainer"></div>
+    <!-- Registration modal -->
+    <div id="registerModal" class="modal hidden">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-translate="register_title">%register_title%</h5>
+                    <button type="button" class="btn-close" id="closeModal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerForm">
+                        <div class="mb-3">
+                            <label for="email" class="form-label" data-translate="email">%email%</label>
+                            <input type="email" class="form-control" id="email" name="email" maxlength="50" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="firstName" class="form-label" data-translate="first_name">%first_name%</label>
+                            <input type="text" class="form-control" id="firstName" name="firstName" maxlength="20" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="lastName" class="form-label" data-translate="last_name">%last_name%</label>
+                            <input type="text" class="form-control" id="lastName" name="lastName" maxlength="20" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label" data-translate="password">%password%</label>
+                            <input type="password" class="form-control" id="password" name="password" minlength="8" maxlength="30" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label" data-translate="confirm_password">%confirm_password%</label>
+                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" minlength="8" maxlength="30" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100" data-translate="submit">%submit%</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="scripts/theme-toggle.js"></script>
     <script src="scripts/language.js"></script>
-    <script>
-        // Carregar modal dinamicamente
-        document.getElementById('openRegisterModal').addEventListener('click', async (e) => {
-            e.preventDefault();
-            const modalContainer = document.getElementById('modalContainer');
-            try {
-                const response = await fetch('register-modal.html');
-                const modalContent = await response.text();
-                modalContainer.innerHTML = modalContent;
-                
-                // Recarregar o script do modal
-                const script = document.createElement('script');
-                script.src = 'scripts/register-modal.js';
-                document.body.appendChild(script);
-            } catch (error) {
-                console.error('Erro ao carregar o modal:', error);
-            }
-        });
-    </script>
+    <script src="scripts/register-modal.js"></script>
 </body>
 </html>

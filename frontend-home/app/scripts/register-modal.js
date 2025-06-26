@@ -1,84 +1,89 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const modalContainer = document.getElementById("modalContainer");
-
-    // Função para abrir o modal
+(() => {
     const openModal = () => {
         const modal = document.getElementById("registerModal");
         modal.classList.remove("hidden");
         modal.classList.add("show");
         modal.style.display = "block";
-
-        // Configura o botão para fechar o modal
         const closeModalBtn = document.getElementById("closeModal");
         closeModalBtn.addEventListener("click", closeModal);
     };
 
-    // Função para fechar o modal
     const closeModal = () => {
         const modal = document.getElementById("registerModal");
+        if (!modal) return;
         modal.classList.remove("show");
         modal.classList.add("hidden");
         modal.style.display = "none";
     };
 
-    // Evento para abrir o modal ao clicar no botão
-    document.getElementById("openRegisterModal").addEventListener("click", async (e) => {
-        e.preventDefault();
-        if (!document.getElementById("registerModal")) {
-            try {
-                const response = await fetch("register-modal.html");
-                const modalContent = await response.text();
-                modalContainer.innerHTML = modalContent;
-
-                // Recarregar validação de formulário e eventos
-                setupFormValidation();
-                openModal();
-            } catch (error) {
-                console.error("Erro ao carregar o modal:", error);
-            }
-        } else {
-            openModal();
-        }
-    });
-
-    // Configuração da validação do formulário
-    const setupFormValidation = () => {
+    const setupForm = () => {
         const registerForm = document.getElementById("registerForm");
-
-        registerForm.addEventListener("submit", (e) => {
+        if (!registerForm) return;
+        registerForm.addEventListener("submit", async (e) => {
             e.preventDefault();
-
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
             const confirmPassword = document.getElementById("confirmPassword").value;
             const firstName = document.getElementById("firstName").value;
             const lastName = document.getElementById("lastName").value;
 
-            // Validação de email
+            const t = window.currentTranslations || {};
+
+            const emailSanitized = email.trim().toLowerCase();
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                alert("%invalid_email%".replace('%invalid_email%', 'Invalid email format'));
+            if (!emailRegex.test(emailSanitized)) {
+                alert(t.invalid_email || "Invalid email format");
                 return;
             }
 
-            // Validação de senha
-            const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{10,30}$/;
-            if (!passwordRegex.test(password)) {
-                alert("%invalid_password%".replace('%invalid_password%', 'Password must contain at least one uppercase letter, one number, and one special character, and be 10-30 characters long.'));
+            const nameRegex = /^[A-Za-zÀ-ÿ' -]+$/;
+            if (!nameRegex.test(firstName)) {
+                alert(t.invalid_first_name || "Invalid first name");
+                return;
+            }
+            if (!nameRegex.test(lastName)) {
+                alert(t.invalid_last_name || "Invalid last name");
                 return;
             }
 
+            if (password.length < 8) {
+                alert(t.invalid_password || "Password must be at least 8 characters");
+                return;
+            }
             if (password !== confirmPassword) {
-                alert("%password_mismatch%".replace('%password_mismatch%', 'Passwords do not match'));
+                alert(t.password_mismatch || "Passwords do not match");
                 return;
             }
 
-            // Exibe mensagem de sucesso e fecha o modal
-            alert("%registration_success%".replace('%registration_success%', 'Registration successful!'));
-            closeModal();
-
-            // Opcional: enviar os dados para o servidor aqui
-            // fetch('/register', { method: 'POST', body: new FormData(registerForm) });
+            try {
+                const res = await fetch('https://localhost:4433/users/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: emailSanitized,
+                        first_name: firstName,
+                        last_name: lastName,
+                        password
+                    })
+                });
+                if (res.ok) {
+                    alert(t.registration_success || 'User created successfully!');
+                    closeModal();
+                    window.location.href = '/';
+                } else {
+                    const data = await res.json();
+                    alert(data.detail || t.registration_error || 'Error creating user');
+                }
+            } catch (err) {
+                alert(t.connection_error || 'Connection error');
+            }
         });
     };
-});
+
+    document.getElementById("openRegisterModal").addEventListener("click", (e) => {
+        e.preventDefault();
+        openModal();
+    });
+
+    setupForm();
+})();

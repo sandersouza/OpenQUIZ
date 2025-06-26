@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr, constr
 from typing import List, Optional
 
 class AnswerInput(BaseModel):
@@ -45,3 +45,17 @@ class QuizOutput(BaseModel):
     id: str
     name: str
     questions: List[QuestionOutput] = []
+
+class UserInput(BaseModel):
+    """Modelo para entrada de dados de um usuário."""
+    email: EmailStr
+    first_name: constr(strip_whitespace=True, regex=r"^[A-Za-zÀ-ÖØ-öø-ÿ' -]+$")
+    last_name: constr(strip_whitespace=True, regex=r"^[A-Za-zÀ-ÖØ-öø-ÿ' -]+$")
+    password: constr(min_length=8)
+
+class UserOutput(BaseModel):
+    """Modelo para saída de dados de um usuário."""
+    id: str
+    email: str
+    first_name: str
+    last_name: str

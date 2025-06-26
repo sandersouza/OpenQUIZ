@@ -106,3 +106,13 @@ pre {
 .form-check-input.custom-switch {
     margin: 0 !important;
 }
+
+/* Modal estilo customizado */
+#registerModal .modal-dialog {
+    max-width: 80vw;
+    min-width: 300px;
+}
+
+#registerModal .modal-content {
+    min-height: 350px;
+}

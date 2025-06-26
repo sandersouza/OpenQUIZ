@@ -2,5 +2,21 @@
   "register": "Cadastrar",
   "login": "Entrar",
   "welcome": "Bem-vindo ao OpenQUIZ",
-  "readme_placeholder": "Este é um espaço reservado para o conteúdo do README."
+  "readme_placeholder": "Este é um espaço reservado para o conteúdo do README.",
+  "register_title": "Criar Conta",
+  "email": "E-mail",
+  "password": "Senha",
+  "confirm_password": "Confirmar Senha",
+  "first_name": "Nome",
+  "last_name": "Sobrenome",
+  "nickname": "Apelido",
+  "submit": "Enviar",
+  "invalid_email": "Formato de e-mail inválido",
+  "invalid_password": "A senha deve ter pelo menos 8 caracteres",
+  "invalid_first_name": "Nome inválido",
+  "invalid_last_name": "Sobrenome inválido",
+  "password_mismatch": "As senhas não conferem",
+  "registration_success": "Usuário criado com sucesso!",
+  "registration_error": "Erro ao criar usuário",
+  "connection_error": "Erro de conexão"
 }
