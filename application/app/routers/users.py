@@ -3,6 +3,7 @@ from pydantic import BaseModel, EmailStr, validator
 from datetime import datetime
 import re
 import os
+import math
 
 router = APIRouter()
 
@@ -35,6 +36,10 @@ class UserOutput(BaseModel):
     first_name: str
     last_name: str
 
+class UserListOutput(BaseModel):
+    users: list[UserOutput]
+    current_page: int
+    total_pages: int
 
 def log_operation(ip: str, method: str, route: str, user_id: str = "N/A", status: str = "success"):
     timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %z")
@@ -77,3 +82,38 @@ async def create_user(request: Request, user: UserInput):
         first_name=created_user["first_name"],
         last_name=created_user["last_name"],
     )
+
+@router.get("/", response_model=UserListOutput)
+async def list_users(request: Request, email: str | None = None, page: int = 1):
+    db = request.app.state.db
+    client_ip = request.client.host if request.client else "unknown"
+
+    if db is None:
+        log_operation(client_ip, "GET", "/users", status="error - database connection failed")
+        raise HTTPException(status_code=500, detail="Erro na conexao com o banco de dados")
+
+    query = {}
+    if email:
+        query["email"] = email.strip().lower()
+
+    if page < 1:
+        page = 1
+
+    skip = (page - 1) * 100
+    cursor = db["users"].find(query).skip(skip).limit(100)
+    records = await cursor.to_list(length=100)
+    total = await db["users"].count_documents(query)
+    total_pages = max(math.ceil(total / 100), 1)
+
+    users = [
+        UserOutput(
+            id=str(u["_id"]),
+            email=u["email"],
+            first_name=u["first_name"],
+            last_name=u["last_name"],
+        )
+        for u in records
+    ]
+
+    log_operation(client_ip, "GET", "/users")
+    return UserListOutput(users=users, current_page=page, total_pages=total_pages)

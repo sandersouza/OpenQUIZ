@@ -166,3 +166,13 @@ Endpoint: https://{server}/users/
 }
 ```
 
+## 🔎 List Users
+**Method and endpoint**
+```txt
+Method  : { GET }
+Endpoint: https://{server}/users/
+```
+
+**Query params**
+- `email`: filter by email (optional)
+- `page`: page number (optional)
