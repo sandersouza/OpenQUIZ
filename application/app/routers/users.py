@@ -30,6 +30,33 @@ class UserInput(BaseModel):
             raise ValueError('Senha deve ter no minimo 8 caracteres')
         return v
 
+class UserUpdateInput(BaseModel):
+    email: EmailStr
+    first_name: str | None = None
+    last_name: str | None = None
+    password: str | None = None
+
+    @validator('email')
+    def upd_email_lower(cls, v: str) -> str:
+        return v.strip().lower()
+
+    @validator('first_name', 'last_name')
+    def upd_name_no_special_chars(cls, v: str | None) -> str | None:
+        if v is None:
+            return v
+        v = v.strip()
+        if not re.fullmatch(r"[A-Za-z]+", v):
+            raise ValueError('Somente letras sao permitidas')
+        return v
+
+    @validator('password')
+    def upd_password_min_length(cls, v: str | None) -> str | None:
+        if v is None:
+            return v
+        if len(v) < 8:
+            raise ValueError('Senha deve ter no minimo 8 caracteres')
+        return v
+
 class UserOutput(BaseModel):
     id: str
     email: EmailStr
@@ -45,9 +72,17 @@ def log_operation(ip: str, method: str, route: str, user_id: str = "N/A", status
     timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %z")
     pid = os.getpid()
     if method.upper() == "POST":
-        log_message = f"[{timestamp}] [{pid}] [INFO] {ip} - [{status}][{method.upper()}] Insert into db with UserID: {user_id}"
+        log_message = (
+            f"[{timestamp}] [{pid}] [INFO] {ip} - [{status}][{method.upper()}] Insert into db with UserID: {user_id}"
+        )
+    elif method.upper() == "PUT":
+        log_message = (
+            f"[{timestamp}] [{pid}] [INFO] {ip} - [{status}][{method.upper()}] Update into db with UserID: {user_id}"
+        )
     else:
-        log_message = f"[{timestamp}] [{pid}] [INFO] {ip} - [{status}][{method.upper()}] Operation on {route}"
+        log_message = (
+            f"[{timestamp}] [{pid}] [INFO] {ip} - [{status}][{method.upper()}] Operation on {route}"
+        )
     print(log_message)
 
 
@@ -117,3 +152,37 @@ async def list_users(request: Request, email: str | None = None, page: int = 1):
 
     log_operation(client_ip, "GET", "/users")
     return UserListOutput(users=users, current_page=page, total_pages=total_pages)
+
+@router.put("/", response_model=UserOutput)
+async def update_user(request: Request, user: UserUpdateInput):
+    db = request.app.state.db
+    client_ip = request.client.host if request.client else "unknown"
+
+    if db is None:
+        log_operation(client_ip, "PUT", "/users", status="error - database connection failed")
+        raise HTTPException(status_code=500, detail="Erro na conexao com o banco de dados")
+
+    existing = await db["users"].find_one({"email": user.email})
+    if not existing:
+        log_operation(client_ip, "PUT", "/users", status="error - email not found")
+        raise HTTPException(status_code=404, detail="E-mail nao encontrado")
+
+    update_fields = {}
+    if user.first_name is not None:
+        update_fields["first_name"] = user.first_name
+    if user.last_name is not None:
+        update_fields["last_name"] = user.last_name
+    if user.password is not None:
+        update_fields["password"] = user.password
+
+    if update_fields:
+        await db["users"].update_one({"_id": existing["_id"]}, {"$set": update_fields})
+
+    updated = await db["users"].find_one({"_id": existing["_id"]})
+    log_operation(client_ip, "PUT", "/users", user_id=str(existing["_id"]))
+    return UserOutput(
+        id=str(updated["_id"]),
+        email=updated["email"],
+        first_name=updated["first_name"],
+        last_name=updated["last_name"],
+    )

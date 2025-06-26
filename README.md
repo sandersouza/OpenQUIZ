@@ -140,7 +140,7 @@ Endpoint: https://{server}/quizzes/{id}
         }
     ]
 }
-  ```
+```
 
 ## 🧨 Delete a Quiz
 **Method and endpoint**
@@ -176,3 +176,20 @@ Endpoint: https://{server}/users/
 **Query params**
 - `email`: filter by email (optional)
 - `page`: page number (optional)
+
+## ♻️ Update a User
+**Method and endpoint**
+```txt
+Method  : { PUT }
+Endpoint: https://{server}/users/
+```
+
+**Request body**
+```json
+{
+    "email": "user@example.com",
+    "first_name": "NovoNome",
+    "last_name": "NovoSobrenome",
+    "password": "outrasenha"
+}
+```
