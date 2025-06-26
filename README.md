@@ -148,3 +148,31 @@ Endpoint: https://{server}/quizzes/{id}
 Method  : { DEL }
 Endpoint: https://{server}/quizzes/{id}
 ```
+
+## ➕ Create a User
+**Method and endpoint**
+```txt
+Method  : { POST }
+Endpoint: https://{server}/users/
+```
+
+**Request body**
+```json
+{
+    "email": "user@example.com",
+    "first_name": "Nome",
+    "last_name": "Sobrenome",
+    "password": "min8chars"
+}
+```
+
+## 🔎 List Users
+**Method and endpoint**
+```txt
+Method  : { GET }
+Endpoint: https://{server}/users/
+```
+
+**Query params**
+- `email`: filter by email (optional)
+- `page`: page number (optional)
