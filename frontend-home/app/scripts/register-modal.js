@@ -28,7 +28,6 @@
             const lastName = document.getElementById("lastName").value;
 
             const t = window.currentTranslations || {};
-
             const emailSanitized = email.trim().toLowerCase();
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(emailSanitized)) {
@@ -50,6 +49,7 @@
                 alert(t.invalid_password || "Password must be at least 8 characters");
                 return;
             }
+          
             if (password !== confirmPassword) {
                 alert(t.password_mismatch || "Passwords do not match");
                 return;
