@@ -18,8 +18,8 @@ def execute_query():
     if not url:
         return jsonify({"error": "URL is required"}), 400
 
-    # Construir o comando CURL
-    curl_command = ["curl"]
+    # Construir o comando CURL e seguir redirecionamentos
+    curl_command = ["curl", "-L"]
 
     # Adicionar flag --http3 se o protocolo for HTTP/3
     if protocol.upper() == "HTTP/3":
