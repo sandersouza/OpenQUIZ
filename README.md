@@ -140,7 +140,7 @@ Endpoint: https://{server}/quizzes/{id}
         }
     ]
 }
-  ```
+```
 
 ## 🧨 Delete a Quiz
 **Method and endpoint**

@@ -30,7 +30,6 @@ class UserInput(BaseModel):
             raise ValueError('Senha deve ter no minimo 8 caracteres')
         return v
 
-
 class UserUpdateInput(BaseModel):
     email: EmailStr
     first_name: str | None = None
@@ -64,12 +63,10 @@ class UserOutput(BaseModel):
     first_name: str
     last_name: str
 
-
 class UserListOutput(BaseModel):
     users: list[UserOutput]
     current_page: int
     total_pages: int
-
 
 class UserDeleteInput(BaseModel):
     email: EmailStr
@@ -77,7 +74,6 @@ class UserDeleteInput(BaseModel):
     @validator('email')
     def del_email_lower(cls, v: str) -> str:
         return v.strip().lower()
-
 
 def log_operation(ip: str, method: str, route: str, user_id: str = "N/A", status: str = "success"):
     timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %z")
@@ -95,7 +91,6 @@ def log_operation(ip: str, method: str, route: str, user_id: str = "N/A", status
             f"[{timestamp}] [{pid}] [INFO] {ip} - [{status}][{method.upper()}] Operation on {route}"
         )
     print(log_message)
-
 
 @router.post("/", response_model=UserOutput)
 async def create_user(request: Request, user: UserInput):
@@ -128,7 +123,6 @@ async def create_user(request: Request, user: UserInput):
         first_name=created_user["first_name"],
         last_name=created_user["last_name"],
     )
-
 
 @router.get("/", response_model=UserListOutput)
 async def list_users(request: Request, email: str | None = None, page: int = 1):
@@ -165,7 +159,6 @@ async def list_users(request: Request, email: str | None = None, page: int = 1):
     log_operation(client_ip, "GET", "/users")
     return UserListOutput(users=users, current_page=page, total_pages=total_pages)
 
-
 @router.put("/", response_model=UserOutput)
 async def update_user(request: Request, user: UserUpdateInput):
     db = request.app.state.db
@@ -199,7 +192,6 @@ async def update_user(request: Request, user: UserUpdateInput):
         first_name=updated["first_name"],
         last_name=updated["last_name"],
     )
-
 
 @router.delete("/")
 async def delete_user(request: Request, user: UserDeleteInput):
