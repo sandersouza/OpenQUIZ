@@ -68,6 +68,13 @@ class UserListOutput(BaseModel):
     current_page: int
     total_pages: int
 
+class UserDeleteInput(BaseModel):
+    email: EmailStr
+
+    @validator('email')
+    def del_email_lower(cls, v: str) -> str:
+        return v.strip().lower()
+
 def log_operation(ip: str, method: str, route: str, user_id: str = "N/A", status: str = "success"):
     timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %z")
     pid = os.getpid()
@@ -84,7 +91,6 @@ def log_operation(ip: str, method: str, route: str, user_id: str = "N/A", status
             f"[{timestamp}] [{pid}] [INFO] {ip} - [{status}][{method.upper()}] Operation on {route}"
         )
     print(log_message)
-
 
 @router.post("/", response_model=UserOutput)
 async def create_user(request: Request, user: UserInput):
@@ -186,3 +192,25 @@ async def update_user(request: Request, user: UserUpdateInput):
         first_name=updated["first_name"],
         last_name=updated["last_name"],
     )
+
+@router.delete("/")
+async def delete_user(request: Request, user: UserDeleteInput):
+    db = request.app.state.db
+    client_ip = request.client.host if request.client else "unknown"
+
+    if db is None:
+        log_operation(client_ip, "DELETE", "/users", status="error - database connection failed")
+        raise HTTPException(status_code=500, detail="Erro na conexao com o banco de dados")
+
+    existing = await db["users"].find_one({"email": user.email})
+    if not existing:
+        log_operation(client_ip, "DELETE", "/users", status="error - email not found")
+        raise HTTPException(status_code=404, detail="E-mail nao encontrado")
+
+    result = await db["users"].delete_one({"_id": existing["_id"]})
+    if result.deleted_count == 0:
+        log_operation(client_ip, "DELETE", "/users", status="error - email not found")
+        raise HTTPException(status_code=404, detail="E-mail nao encontrado")
+
+    log_operation(client_ip, "DELETE", "/users", user_id=str(existing["_id"]))
+    return {"message": f"Usuario com e-mail {user.email} foi deletado com sucesso."}

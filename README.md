@@ -193,3 +193,17 @@ Endpoint: https://{server}/users/
     "password": "outrasenha"
 }
 ```
+
+## 🧨 Delete a User
+**Method and endpoint**
+```txt
+Method  : { DEL }
+Endpoint: https://{server}/users/
+```
+
+**Request body**
+```json
+{
+    "email": "user@example.com"
+}
+```
