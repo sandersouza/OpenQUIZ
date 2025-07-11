@@ -19,27 +19,49 @@ document.addEventListener('DOMContentLoaded', function () {
             reader.onload = async function (e) {
                 try {
                     const text = e.target.result;
-                    const queries = JSON.parse(text);
-                    if (!Array.isArray(queries)) {
-                        console.error('O JSON importado não é um array.');
-                        alert('Arquivo inválido: o JSON deve conter um array de queries.');
+                    const data = JSON.parse(text);
+                    if (Array.isArray(data) && data.length && data[0].queries) {
+                        for (let col of data) {
+                            const colPayload = { name: col.name, variables: col.variables || {} };
+                            const colRes = await fetch('/collections', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(colPayload)
+                            });
+                            const colData = await colRes.json();
+                            const colId = colData.id;
+                            if (Array.isArray(col.queries)) {
+                                for (let query of col.queries) {
+                                    if (query._id) delete query._id;
+                                    query.collection_id = colId;
+                                    const res = await fetch('/queries', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify(query)
+                                    });
+                                    if (!res.ok) {
+                                        const error = await res.json();
+                                        console.error("Erro ao importar query:", error.message);
+                                    }
+                                }
+                            }
+                        }
+                    } else if (Array.isArray(data)) {
+                        for (let query of data) {
+                            if (query._id) { delete query._id; }
+                            const res = await fetch('/queries', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(query)
+                            });
+                            if (!res.ok) {
+                                const error = await res.json();
+                                console.error("Erro ao importar query:", error.message);
+                            }
+                        }
+                    } else {
+                        alert('Formato de arquivo inválido.');
                         return;
-                    }
-                    // Importa cada query individualmente
-                    for (let query of queries) {
-                        // Remover o _id se existir para evitar conflitos com o banco
-                        if (query._id) {
-                            delete query._id;
-                        }
-                        const res = await fetch('/queries', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(query)
-                        });
-                        if (!res.ok) {
-                            const error = await res.json();
-                            console.error("Erro ao importar query:", error.message);
-                        }
                     }
                     alert("Queries importadas com sucesso!");
                     // Atualiza a sidebar (se loadAllQueries estiver disponível globalmente)

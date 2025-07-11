@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from tinydb import Query as TinyQuery
-from database import queries_table  # queries_table é a "tabela" do TinyDB
+from database import queries_table, collections_table  # collections_table para grupos de queries
 
 queries_bp = Blueprint("queries", __name__, url_prefix="/queries")
 
@@ -14,6 +14,7 @@ def build_query_payload(data):
         "headers": data.get("headers", {}),
         "body": data.get("body", {}),
         "bearer_token": data.get("bearer_token", ""),
+        "collection_id": data.get("collection_id"),
     }
 
 # Rota para salvar ou atualizar uma query
@@ -28,6 +29,18 @@ def save_query():
             return jsonify({"error": "Query name is required"}), 400
 
         query_payload = build_query_payload(data)
+        collection_id = query_payload.get("collection_id")
+        if collection_id is not None:
+            try:
+                col_id = int(collection_id)
+                collection = collections_table.get(doc_id=col_id)
+                if collection and isinstance(collection.get("variables"), dict):
+                    query_payload["headers"] = {
+                        **collection.get("variables", {}),
+                        **query_payload["headers"],
+                    }
+            except Exception:
+                pass
         query_id = data.get("_id")
         if query_id:
             try:
@@ -68,8 +81,22 @@ def handle_query(query_id):
             if not data or "name" not in data or not data["name"].strip():
                 return jsonify({"error": "Invalid payload or missing 'name'"}), 400
 
+            payload = build_query_payload(data)
+            collection_id = payload.get("collection_id")
+            if collection_id is not None:
+                try:
+                    col_id = int(collection_id)
+                    collection = collections_table.get(doc_id=col_id)
+                    if collection and isinstance(collection.get("variables"), dict):
+                        payload["headers"] = {
+                            **collection.get("variables", {}),
+                            **payload["headers"],
+                        }
+                except Exception:
+                    pass
+
             if queries_table.contains(doc_id=query_id_int):
-                queries_table.update(data, doc_ids=[query_id_int])
+                queries_table.update(payload, doc_ids=[query_id_int])
                 return jsonify({"message": "Query updated successfully"}), 200
             else:
                 return jsonify({"error": "Query not found"}), 404

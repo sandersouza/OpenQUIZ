@@ -107,6 +107,19 @@ ul#queries-list {
     padding: 0;
     cursor: pointer;
 }
+
+.collection-label {
+    font-weight: bold;
+    margin-top: 10px;
+    cursor: pointer;
+}
+.collection-label.selected {
+    color: #4caf50;
+}
+.collection-queries {
+    list-style: none;
+    padding-left: 10px;
+}
 #new-blank-query-btn {
     background-color: #4caf50;
     color: white;

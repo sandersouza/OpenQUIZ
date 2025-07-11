@@ -3,28 +3,20 @@
 // Função para carregar todas as queries da API
 async function loadAllQueries() {
     try {
-        console.log("Carregando queries...");
-        const res = await fetch("/queries");
+        const res = await fetch("/collections");
         if (!res.ok) {
             throw new Error(`Erro na resposta da API: ${res.status}`);
         }
-        const queries = await res.json();
-        console.log("Queries carregadas:", queries);
+        const collections = await res.json();
         const queriesList = document.getElementById("queries-list");
         if (!queriesList) {
             console.error("Elemento com id 'queries-list' não foi encontrado no DOM.");
             return;
         }
         queriesList.innerHTML = "";
-        queries.forEach(query => {
-            if (query.name && query._id) {
-                addQueryToSidebar(query.name, query._id, formatMethod(query.method));
-            } else {
-                console.warn("Dados da query inválidos:", query);
-            }
-        });
+        collections.forEach(col => addCollectionToSidebar(col));
     } catch (err) {
-        console.error("Error loading queries:", err);
+        console.error("Error loading collections:", err);
     }
 }
 
@@ -49,6 +41,7 @@ async function loadQuery(queryId, selectedItem) {
 
         currentQueryId = data._id;
         currentQueryName = data.name;
+        currentCollectionId = selectedItem.dataset.collectionId || null;
 
         console.log(`Query loaded: ${currentQueryName} (${currentQueryId})`);
 
@@ -116,8 +109,8 @@ async function duplicateQuery(queryId) {
 }
 
 // Função para adicionar uma query ao sidebar
-function addQueryToSidebar(queryName, queryId, method) {
-    const queriesList = document.getElementById("queries-list");
+function addQueryToSidebar(queryName, queryId, method, parent, collectionId) {
+    const queriesList = parent || document.getElementById("queries-list");
     if (!queriesList) {
         console.error("Elemento com id 'queries-list' não foi encontrado.");
         return;
@@ -136,6 +129,9 @@ function addQueryToSidebar(queryName, queryId, method) {
         </div>
     `;
     newItem.dataset.queryId = queryId;
+    if (collectionId) {
+        newItem.dataset.collectionId = collectionId;
+    }
     newItem.classList.add("query-item");
     queriesList.appendChild(newItem);
 
@@ -163,6 +159,38 @@ function addQueryToSidebar(queryName, queryId, method) {
             menuOptions.classList.remove("visible");
         }
     });
+}
+
+function addCollectionToSidebar(collection) {
+    const queriesList = document.getElementById("queries-list");
+    if (!queriesList) return;
+
+    const colItem = document.createElement("li");
+    colItem.classList.add("collection-item");
+    const header = document.createElement("div");
+    header.classList.add("collection-label");
+    header.textContent = collection.name;
+    header.dataset.collectionId = collection._id;
+    header.addEventListener("click", () => {
+        currentCollectionId = collection._id;
+        document.querySelectorAll('.collection-label').forEach(h => h.classList.remove('selected'));
+        header.classList.add('selected');
+    });
+
+    const subList = document.createElement("ul");
+    subList.classList.add("collection-queries");
+
+    if (Array.isArray(collection.queries)) {
+        collection.queries.forEach(q => {
+            if (q.name && q._id) {
+                addQueryToSidebar(q.name, q._id, formatMethod(q.method), subList, collection._id);
+            }
+        });
+    }
+
+    colItem.appendChild(header);
+    colItem.appendChild(subList);
+    queriesList.appendChild(colItem);
 }
 
 // Função para formatar o método HTTP
@@ -285,7 +313,8 @@ async function createQuery(queryName) {
         url: "",
         headers: {},
         body: "",
-        bearer_token: ""
+        bearer_token: "",
+        collection_id: currentCollectionId
     };
     try {
         const res = await fetch("/queries", {
@@ -319,6 +348,28 @@ document.getElementById("toggle-sidebar-btn").addEventListener("click", () => {
     const toggleContainer = document.querySelector(".toggle-container");
     const isHidden = sidebar.classList.toggle("hidden");
     toggleContainer.style.transform = isHidden ? "rotateY(180deg)" : "translateX(0)";
+});
+
+async function createCollection(name) {
+    const payload = { name: name, variables: {} };
+    const res = await fetch('/collections', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (!res.ok) {
+        showFeedbackMessage(`Error: ${data.error}`);
+    } else {
+        showFeedbackMessage('Collection created');
+        currentCollectionId = data.id;
+        await loadAllQueries();
+    }
+}
+
+document.getElementById('new-collection-btn').addEventListener('click', () => {
+    const name = prompt('Collection name');
+    if (name) { createCollection(name.trim()); }
 });
 
 loadAllQueries();

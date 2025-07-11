@@ -12,6 +12,7 @@ const toggleContainer = document.querySelector(".toggle-lingueta");
 // Variáveis para armazenar o estado atual
 let currentQueryId = null;
 let currentQueryName = null;
+let currentCollectionId = null;
 
 // Função para exibir mensagem de feedback
 function showFeedbackMessage(message) {

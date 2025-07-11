@@ -25,3 +25,4 @@ os.makedirs(os.path.dirname(db_path), exist_ok=True)
 
 db = TinyDB(db_path)
 queries_table = db.table("queries")
+collections_table = db.table("collections")

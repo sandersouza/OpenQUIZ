@@ -16,8 +16,11 @@
     <div class="container">
         <div class="queries-sidebar">
             <div class="queries-header">
-                <h2 class="queries-title">Queries</h2>
+                <h2 class="queries-title">Collections</h2>
                 <div class="queries-buttons">
+                    <button id="new-collection-btn" title="Create collection">
+                        <i class="bi bi-folder-plus"></i>
+                    </button>
                     <button id="new-blank-query-btn" title="Create a new blank query">
                         <i class="bi bi-plus-square-fill"></i>
                     </button>
@@ -31,15 +34,7 @@
                     </button>
                 </div>
             </div>
-            <ul id="queries-list">
-                {% for query in queries %}
-                <li class="query-item">
-                    <div class="query-row">
-                        <span>{{ query.name }}</span>
-                    </div>
-                </li>
-                {% endfor %}
-            </ul>
+            <ul id="queries-list"></ul>
             <!-- Lingueta para ocultar/exibir a sidebar -->
             <div class="toggle-container">
                 <button id="toggle-sidebar-btn" title="Toggle sidebar" class="toggle-lingueta">
