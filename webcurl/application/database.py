@@ -8,9 +8,20 @@ def load_config(config_path="config.yml"):
 
 config = load_config()
 
-# Obtenha o caminho do DB a partir de uma variável de ambiente, ou use um padrão gravável
-default_db = os.path.join(os.path.dirname(__file__), "..", "data", "db", "db.json")
-db_path = os.getenv("TINYDB_PATH", default_db)
+# Determine o caminho do DB a partir da variável de ambiente ou de locais padrões
+db_path = os.getenv("TINYDB_PATH")
+if not db_path:
+    # Caminho dentro do repositório (../data/db/db.json)
+    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    candidate = os.path.join(repo_root, "data", "db", "db.json")
+    if os.path.exists(candidate):
+        db_path = candidate
+    else:
+        # Fallback para dentro do diretório da aplicação
+        db_path = os.path.join(os.path.dirname(__file__), "db.json")
+
+# Garante que a pasta exista para evitar erros ao abrir o arquivo
+os.makedirs(os.path.dirname(db_path), exist_ok=True)
 
 db = TinyDB(db_path)
 queries_table = db.table("queries")
