@@ -1,5 +1,6 @@
-import subprocess
 import json
+import shlex
+import subprocess
 import time
 from flask import Blueprint, request, jsonify
 
@@ -23,9 +24,9 @@ def execute_query():
 
     # Adicionar flag --http3 se o protocolo for HTTP/3
     if protocol.upper() == "HTTP/3":
-        curl_command += ["--http3", "-k", "-v", "-X", method, f'"{url}"']
+        curl_command += ["--http3", "-k", "-v", "-X", method, url]
     else:
-        curl_command += ["-k", "-v", "-X", method, f'"{url}"']
+        curl_command += ["-k", "-v", "-X", method, url]
 
     # Adicionar token ao cabeçalho se existir
     if token:
@@ -33,21 +34,21 @@ def execute_query():
 
     # Adicionar cabeçalhos ao comando
     for key, value in headers.items():
-        curl_command += ["-H", f'"{key}: {value}"']
+        curl_command += ["-H", f"{key}: {value}"]
 
     # Adicionar corpo da requisição se houver
     if body:
-        body_doublequote = json.dumps(body)
-        curl_command += ["-d", f'\'{body_doublequote}\'']
+        body_str = json.dumps(body) if isinstance(body, (dict, list)) else str(body)
+        curl_command += ["-d", body_str]
 
     # Converter o comando para string para depuração
-    curl_command_str = " ".join(curl_command)
+    curl_command_str = " ".join(shlex.quote(arg) for arg in curl_command)
 
     try:
         # Medir o tempo de execução
         start_time = time.time()
         result = subprocess.run(
-            curl_command_str, shell=True, capture_output=True, text=True, check=True
+            curl_command, capture_output=True, text=True, check=True
         )
         end_time = time.time()
         response_time = (end_time - start_time) * 1000  # Tempo em milissegundos

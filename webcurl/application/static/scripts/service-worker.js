@@ -1,7 +1,6 @@
 const CACHE_NAME = "webcurl-cache-v1";
 const urlsToCache = [
     "/", // Página principal
-    "/template/index.html",
     "/static/styles/base.css",
     "/static/styles/sidebar.css",
     "/static/styles/editor.css",
