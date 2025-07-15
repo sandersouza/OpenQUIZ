@@ -35,7 +35,7 @@ async def custom_rate_limit_handler(request: Request, exc: Exception):
 
 # Middleware de autenticação
 security = HTTPBearer()
-async def authenticate(credentials: HTTPAuthorizationCredentials = Depends(security)):
+def authenticate(credentials: HTTPAuthorizationCredentials = Depends(security)):
     if credentials.scheme != "Bearer" or credentials.credentials != BEARER_TOKEN:
         raise HTTPException(status_code=403, detail="Invalid or missing Bearer Token")
 
