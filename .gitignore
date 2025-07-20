@@ -20,3 +20,8 @@ db/data/
 # Protect sensible data
 # .env
 # docker-compose.yml
+
+# MacOS
+.DS_Store
+.AppleDouble
+.LSOverride
